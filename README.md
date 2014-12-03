@@ -1,6 +1,8 @@
 rails_base
 ----
 
+Railsのベース
+
 ```
 git init
 bundle init # gem 'rails' を追記

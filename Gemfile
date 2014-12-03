@@ -24,6 +24,20 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
+gem 'underscore-rails'
+gem 'therubyracer',  platforms: :ruby
+gem 'devise'
+gem 'authority'
+gem 'haml-rails'
+gem 'draper'
+
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'quiet_assets'
+  gem 'factory_girl_rails'
+  gem 'pry-rails'
+end
+
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
 
