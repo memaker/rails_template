@@ -28,6 +28,7 @@ gem 'underscore-rails'
 gem 'therubyracer',  platforms: :ruby
 gem 'devise'
 gem 'authority'
+gem 'rolify'
 gem 'haml-rails'
 gem 'draper'
 gem 'twitter-bootstrap-rails'
