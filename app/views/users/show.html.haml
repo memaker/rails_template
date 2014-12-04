@@ -7,10 +7,6 @@
   %br
   = @user.email
 %p
-  %strong= model_class.human_attribute_name(:encrypted_password) + ':'
-  %br
-  = @user.encrypted_password
-%p
   %strong= model_class.human_attribute_name(:reset_password_token) + ':'
   %br
   = @user.reset_password_token

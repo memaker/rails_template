@@ -18,6 +18,8 @@ ja:
         email: メール
         last_sign_in_at: 最終ログイン日時
         last_sign_in_ip: 最終ログインIP
+        password: パスワード
+        password_confirmation: パスワード確認
         reset_password_sent_at: リセットパスワード送信日時
         reset_password_token: リセットパスワードトークン
         roles: ロール
