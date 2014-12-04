@@ -30,6 +30,8 @@ gem 'devise'
 gem 'authority'
 gem 'haml-rails'
 gem 'draper'
+gem 'twitter-bootstrap-rails'
+gem 'simple_form', '3.1.0.rc2'
 
 group :development, :test do
   gem 'rspec-rails'
