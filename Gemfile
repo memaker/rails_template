@@ -33,6 +33,7 @@ gem 'haml-rails'
 gem 'draper'
 gem 'twitter-bootstrap-rails'
 gem 'simple_form', '3.1.0.rc2'
+gem 'i18n_generators', require: false
 
 group :development, :test do
   gem 'rspec-rails'

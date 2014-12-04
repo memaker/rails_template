@@ -1,0 +1,25 @@
+ja:
+  activerecord:
+    models:
+      role: ロール
+      user: ユーザー
+
+    attributes:
+      role:
+        name: 名前
+        resource: リソース
+        resource_type: リソースタイプ
+        users: users  #g
+
+      user:
+        id: ID
+        current_sign_in_at: ログイン日時
+        current_sign_in_ip: ログインIP
+        email: メール
+        last_sign_in_at: 最終ログイン日時
+        last_sign_in_ip: 最終ログインIP
+        reset_password_sent_at: リセットパスワード送信日時
+        reset_password_token: リセットパスワードトークン
+        roles: ロール
+        created_at: 作成日時
+        updated_at: 更新日時
