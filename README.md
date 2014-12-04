@@ -15,3 +15,5 @@ DB名変更
 ```
 bundle exec rake db:create
 ```
+
+gemを追加、セットアップ
