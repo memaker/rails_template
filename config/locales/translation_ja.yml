@@ -3,6 +3,7 @@ ja:
     models:
       role: ロール
       user: ユーザー
+      post: ポスト
 
     attributes:
       role:
@@ -23,5 +24,11 @@ ja:
         reset_password_sent_at: リセットパスワード送信日時
         reset_password_token: リセットパスワードトークン
         roles: ロール
+        created_at: 作成日時
+        updated_at: 更新日時
+
+      post:
+        title: タイトル
+        description: 説明文
         created_at: 作成日時
         updated_at: 更新日時

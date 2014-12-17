@@ -1,9 +1,9 @@
-= simple_form_for(@post) do |f|
-  = f.error_notification
+= simple_form_for @post, wrapper: 'horizontal_form', :html => { :class => 'form-horizontal' } do |f|
+  = f.input :title
+  = error_span(@post[:title])
 
-  .form-inputs
-    = f.input :title
-    = f.input :description
+  = f.input :description
+  = error_span(@post[:description])
 
-  .form-actions
-    = f.button :submit
+  = f.button :submit, :class => 'btn-primary'
+  = link_to t('.cancel', :default => t("helpers.links.cancel")), users_path, :class => 'btn btn-default'
