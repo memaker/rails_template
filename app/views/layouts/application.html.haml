@@ -3,8 +3,9 @@
   - if user_signed_in?
     - if controller_name == 'posts' && action_name == 'edit'
       = render partial: 'layouts/header_not_signed_in'
-      = render partial: 'layouts/navbar'
-      = render partial: 'layouts/main_container'
+      %body.no-skin
+        = render partial: 'layouts/navbar'
+        = render partial: 'layouts/main_container'
     - else
       = render partial: 'layouts/header_signed_in'
       = render partial: 'layouts/body_signed_in'

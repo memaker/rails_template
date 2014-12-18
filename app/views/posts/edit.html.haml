@@ -7,7 +7,7 @@
       Common form elements and layouts
 / /.page-header
 
-%h1=t '.title', :default => [:'helpers.titles.edit', 'Edit %{model}'], :model => model_class.model_name.human.titleize
+-#%h1=t '.title', :default => [:'helpers.titles.edit', 'Edit %{model}'], :model => model_class.model_name.human.titleize
 = render partial: 'form2'
 
 / [if !IE]>
@@ -460,7 +460,7 @@
 %link{:href => "/assets/css/ace.onpage-help.css", :rel => "stylesheet"}/
 %link{:href => "/assets/docs/assets/js/themes/sunburst.css", :rel => "stylesheet"}/
 :javascript
-  ace.vars['base'] = '..';
+  ace.vars['base'] = '';
 %script{:src => "/assets/js/ace/elements.onpage-help.js"}
 %script{:src => "/assets/js/ace/ace.onpage-help.js"}
 %script{:src => "/assets/docs/assets/js/rainbow.js"}
