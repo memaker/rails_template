@@ -1,0 +1,17 @@
+#breadcrumbs.breadcrumbs
+  :javascript
+    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+  %ul.breadcrumb
+    %li
+      %i.ace-icon.fa.fa-home.home-icon
+      %a{:href => "#"} Home
+    %li
+      %a{:href => "#"} Forms
+    %li.active Form Elements
+  / /.breadcrumb
+  / #section:basics/content.searchbox
+  #nav-search.nav-search
+    %form.form-search
+      %span.input-icon
+        %input#nav-search-input.nav-search-input{:autocomplete => "off", :placeholder => "Search ...", :type => "text"}/
+        %i.ace-icon.fa.fa-search.nav-search-icon
