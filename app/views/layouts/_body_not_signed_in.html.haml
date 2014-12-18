@@ -12,6 +12,7 @@
               %h4#id-company-text.blue &copy; Company Name
             .space-6
             .position-relative
+              / login box
               #login-box.login-box.visible.widget-box.no-border
                 .widget-body
                   .widget-main
@@ -19,22 +20,23 @@
                       %i.ace-icon.fa.fa-coffee.green
                       Please Enter Your Information
                     .space-6
-                    %form
+                    = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
                       %fieldset
                         %label.block.clearfix
                           %span.block.input-icon.input-icon-right
-                            %input.form-control{:placeholder => "Username", :type => "text"}/
+                            = f.text_field :email, class: 'form-control', placeholder: 'Email', autofocus: true
                             %i.ace-icon.fa.fa-user
                         %label.block.clearfix
                           %span.block.input-icon.input-icon-right
-                            %input.form-control{:placeholder => "Password", :type => "password"}/
+                            = f.password_field :password, class: 'form-control', placeholder: 'Password', autocomplete: 'off'
                             %i.ace-icon.fa.fa-lock
                         .space
                         .clearfix
-                          %label.inline
-                            %input.ace{:type => "checkbox"}/
-                            %span.lbl Remember Me
-                          %button.width-35.pull-right.btn.btn-sm.btn-primary{:type => "button"}
+                          - if devise_mapping.rememberable?
+                            %label.inline
+                              = f.check_box :remember_me, class: 'ace'
+                              %span.lbl Remember Me
+                          %button.width-35.pull-right.btn.btn-sm.btn-primary{:type => "submit"}
                             %i.ace-icon.fa.fa-key
                             %span.bigger-110 Login
                         .space-4
@@ -152,14 +154,14 @@
   / basic scripts
   / [if !IE]>
   :javascript
-    window.jQuery || document.write("<script src='../assets/js/jquery.js'>"+"<"+"/script>");
+    window.jQuery || document.write("<script src='/assets/js/jquery.js'>"+"<"+"/script>");
   / <![endif]
   /[if IE]
     <script type="text/javascript">
-    window.jQuery || document.write("<script src='../assets/js/jquery1x.js'>"+"<"+"/script>");
+    window.jQuery || document.write("<script src='/assets/js/jquery1x.js'>"+"<"+"/script>");
     </script>
   :javascript
-    if('ontouchstart' in document.documentElement) document.write("<script src='../assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
+    if('ontouchstart' in document.documentElement) document.write("<script src='/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
   / inline scripts related to this page
   :javascript
     jQuery(function($) {
