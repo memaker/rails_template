@@ -1,4 +1,4 @@
-rails_base
+rails_template
 ----
 
 Railsのベース
