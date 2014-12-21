@@ -1,6 +1,30 @@
 .row
   .col-xs-12
     / PAGE CONTENT BEGINS
+    = form_for @post, html: {class: 'form-horizontal', role: 'form'} do |f|
+      .form-group
+        = f.label :title, class: ' col-sm-3 control-label no-padding-right'
+        .col-sm-9
+          = f.text_field :title, class: 'col-xs-10 col-sm-5', placeholder: 'Title'
+      .form-group
+        = f.label :description, class: ' col-sm-3 control-label no-padding-right'
+        .col-sm-9
+          = f.text_field :description, class: 'col-xs-10 col-sm-5', placeholder: 'Description'
+
+      .clearfix.form-actions
+        .col-md-offset-3.col-md-9
+          = button_tag class: 'button btn btn-info', type: 'submit' do
+            %i.ace-icon.fa.fa-check.bigger-110
+            = t('.update', :default => t("helpers.submit.update"))
+
+          &nbsp;&nbsp;&nbsp;
+
+          = link_to posts_path, class: 'btn', type: 'reset' do
+            %i.ace-icon.fa.fa-undo.bigger-110
+            = t('.cancel', :default => t("helpers.links.cancel"))
+
+    %hr
+
     %form.form-horizontal{:role => "form"}
       / #section:elements.form
       .form-group
