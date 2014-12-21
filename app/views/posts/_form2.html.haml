@@ -27,7 +27,7 @@
           %span.help-inline.col-xs-12.col-sm-7
             %label.middle
               %input#id-disable-check.ace{:type => "checkbox"}/
-              %span.lbl Disable it!
+              %span.lbl &nbsp;Disable it!
       .space-4
       .form-group
         %label.col-sm-3.control-label.no-padding-right{:for => "form-field-4"} Relative Sizing
@@ -233,23 +233,23 @@
             .checkbox
               %label
                 %input.ace{:name => "form-field-checkbox", :type => "checkbox"}/
-                %span.lbl choice 1
+                %span.lbl &nbsp;choice 1
             .checkbox
               %label
                 %input.ace{:name => "form-field-checkbox", :type => "checkbox"}/
-                %span.lbl choice 2
+                %span.lbl &nbsp;choice 2
             .checkbox
               %label
                 %input.ace.ace-checkbox-2{:name => "form-field-checkbox", :type => "checkbox"}/
-                %span.lbl choice 3
+                %span.lbl &nbsp;choice 3
             .checkbox
               %label.block
                 %input.ace{:disabled => "", :name => "form-field-checkbox", :type => "checkbox"}/
-                %span.lbl disabled
+                %span.lbl &nbsp;disabled
             .checkbox
               %label.block
                 %input.ace.input-lg{:name => "form-field-checkbox", :type => "checkbox"}/
-                %span.lbl.bigger-120 large checkbox
+                %span.lbl.bigger-120 &nbsp;large checkbox
         / /section:custom/checkbox
         .col-xs-12.col-sm-6
           .control-group
@@ -257,23 +257,23 @@
             .radio
               %label
                 %input.ace{:name => "form-field-radio", :type => "radio"}/
-                %span.lbl radio option 1
+                %span.lbl &nbsp;radio option 1
             .radio
               %label
                 %input.ace{:name => "form-field-radio", :type => "radio"}/
-                %span.lbl radio option 2
+                %span.lbl &nbsp;radio option 2
             .radio
               %label
                 %input.ace{:name => "form-field-radio", :type => "radio"}/
-                %span.lbl radio option 3
+                %span.lbl &nbsp;radio option 3
             .radio
               %label
                 %input.ace{:disabled => "", :name => "form-field-radio", :type => "radio"}/
-                %span.lbl disabled
+                %span.lbl &nbsp;disabled
             .radio
               %label
                 %input.ace.input-lg{:name => "form-field-radio", :type => "radio"}/
-                %span.lbl.bigger-120 large radio
+                %span.lbl.bigger-120 &nbsp;large radio
       / /.row
       %hr/
       .form-group
@@ -356,7 +356,7 @@
                 / #section:custom/file-input.filter
                 %label
                   %input#id-file-format.ace{:name => "file-format", :type => "checkbox"}/
-                  %span.lbl Allow only images
+                  %span.lbl &nbsp;Allow only images
         / /section:custom/file-input.filter
         .col-sm-4
           .widget-box
@@ -537,11 +537,11 @@
                 / <legend>Form</legend>
                 %fieldset
                   %label Label name
-                  %input{:placeholder => "Type something&hellip;", :type => "text"}/
+                  %input{:placeholder => "Type something&hellip;".html_safe, :type => "text"}/
                   %span.help-block Example block-level help text here.
                   %label.pull-right
                     %input.ace{:type => "checkbox"}/
-                    %span.lbl check me out
+                    %span.lbl &nbsp;check me out
                 .form-actions.center
                   %button.btn.btn-sm.btn-success{:type => "button"}
                     Submit
@@ -557,7 +557,7 @@
                 %input.input-small{:placeholder => "Password", :type => "password"}/
                 %label.inline
                   %input.ace{:type => "checkbox"}/
-                  %span.lbl remember me
+                  %span.lbl &nbsp;remember me
                 %button.btn.btn-info.btn-sm{:type => "button"}
                   %i.ace-icon.fa.fa-key.bigger-110>
                   Login
