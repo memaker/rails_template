@@ -1,6 +1,73 @@
 - model_class = Post
 .page-header
-  %h1=t '.title', :default => model_class.model_name.human.pluralize.titleize
+  %h1
+    = t '.title', :default => model_class.model_name.human.pluralize(:ja).titleize
+    %small
+      %i.ace-icon.fa.fa-angle-double-right
+      Common form elements and layouts
+
+
+.row
+  .col-xs-12
+    %table#simple-table.table.table-striped.table-bordered.table-hover
+      %thead
+        %tr
+          %th.center
+            %label.pos-rel
+              %input.ace{:type => "checkbox"}/
+              %span.lbl
+          %th= model_class.human_attribute_name(:id)
+          %th= model_class.human_attribute_name(:title)
+          %th= model_class.human_attribute_name(:description)
+          %th.hidden-480 Clicks
+          %th
+            %i.ace-icon.fa.fa-clock-o.bigger-110.hidden-480
+            Update
+          %th.hidden-480 Status
+          %th
+      %tbody
+        - @posts.each do |post|
+          %tr
+            %td.center
+              %label.pos-rel
+                %input.ace{:type => "checkbox"}/
+                %span.lbl
+            %td= post.id
+            %td= post.title
+            %td= post.description
+            %td.hidden-480 3,330
+            %td Feb 12
+            %td.hidden-480
+              %span.label.label-sm.label-warning Expiring
+            %td
+              .hidden-sm.hidden-xs.btn-group
+                %button.btn.btn-xs.btn-success
+                  %i.ace-icon.fa.fa-check.bigger-120
+                %button.btn.btn-xs.btn-info
+                  %i.ace-icon.fa.fa-pencil.bigger-120
+                %button.btn.btn-xs.btn-danger
+                  %i.ace-icon.fa.fa-trash-o.bigger-120
+                %button.btn.btn-xs.btn-warning
+                  %i.ace-icon.fa.fa-flag.bigger-120
+              .hidden-md.hidden-lg
+                .inline.pos-rel
+                  %button.btn.btn-minier.btn-primary.dropdown-toggle{"data-position" => "auto", "data-toggle" => "dropdown"}
+                    %i.ace-icon.fa.fa-cog.icon-only.bigger-110
+                  %ul.dropdown-menu.dropdown-only-icon.dropdown-yellow.dropdown-menu-right.dropdown-caret.dropdown-close
+                    %li
+                      %a.tooltip-info{"data-rel" => "tooltip", :href => "#", :title => "View"}
+                        %span.blue
+                          %i.ace-icon.fa.fa-search-plus.bigger-120
+                    %li
+                      %a.tooltip-success{"data-rel" => "tooltip", :href => "#", :title => "Edit"}
+                        %span.green
+                          %i.ace-icon.fa.fa-pencil-square-o.bigger-120
+                    %li
+                      %a.tooltip-error{"data-rel" => "tooltip", :href => "#", :title => "Delete"}
+                        %span.red
+                          %i.ace-icon.fa.fa-trash-o.bigger-120
+
+
 %table.table.table-striped
   %thead
     %tr

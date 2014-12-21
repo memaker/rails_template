@@ -1,5 +1,9 @@
 # Be sure to restart your server when you modify this file.
 
+ActiveSupport::Inflector.inflections(:ja) do |inflect|
+  inflect.plural /^(.+)$/i, '\1'
+end
+
 # Add new inflection rules using the following format. Inflections
 # are locale specific, and you may define rules for as many different
 # locales as you wish. All of these examples are active by default:
