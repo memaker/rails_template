@@ -22,7 +22,12 @@
         .col-md-offset-3.col-md-9
           = button_tag class: 'button btn btn-info', type: 'submit' do
             %i.ace-icon.fa.fa-check.bigger-110
-            = t('.update', :default => t("helpers.submit.update"))
+            - if action_name.in?(%w(new create))
+              = t('.create', :default => t("helpers.submit.create"))
+            - elsif action_name.in?(%w(edit update))
+              = t('.update', :default => t("helpers.submit.update"))
+            - else
+              = t('.submit', :default => t("helpers.submit.submit"))
 
           &nbsp;&nbsp;&nbsp;
 

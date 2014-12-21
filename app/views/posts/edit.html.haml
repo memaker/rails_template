@@ -1,7 +1,7 @@
 - model_class = Post
 .page-header
   %h1
-    Form Elements
+    = t '.title', :default => [:'helpers.titles.edit', 'Edit %{model}'], :model => model_class.model_name.human.titleize
     %small
       %i.ace-icon.fa.fa-angle-double-right
       Common form elements and layouts
