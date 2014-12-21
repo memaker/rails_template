@@ -2,14 +2,21 @@
   .col-xs-12
     / PAGE CONTENT BEGINS
     = form_for @post, html: {class: 'form-horizontal', role: 'form'} do |f|
-      .form-group
+      %div{ class: "form-group #{'has-error' if @post.errors[:title].present?}" }
         = f.label :title, class: ' col-sm-3 control-label no-padding-right'
         .col-sm-9
-          = f.text_field :title, class: 'col-xs-10 col-sm-5', placeholder: 'Title'
-      .form-group
+          = f.text_field :title, class: 'col-xs-10 col-sm-5', placeholder: Post.human_attribute_name(:title)
+          - if @post.errors[:title].present?
+            %span.help-inline.col-xs-12.col-sm-7
+              %span.middle= @post.errors[:title].join(', ')
+
+      %div{ class: "form-group #{'has-error' if @post.errors[:description].present?}" }
         = f.label :description, class: ' col-sm-3 control-label no-padding-right'
         .col-sm-9
-          = f.text_field :description, class: 'col-xs-10 col-sm-5', placeholder: 'Description'
+          = f.text_area :description, class: 'col-xs-10 col-sm-5', placeholder: Post.human_attribute_name(:description)
+          - if @post.errors[:description].present?
+            %span.help-inline.col-xs-12.col-sm-7
+              %span.middle= @post.errors[:description].join(', ')
 
       .clearfix.form-actions
         .col-md-offset-3.col-md-9

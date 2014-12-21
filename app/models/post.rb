@@ -1,5 +1,5 @@
 class Post < ActiveRecord::Base
   include Authority::Abilities
 
-  validates :title, presence: true
+  validates :title, :description, presence: true
 end
