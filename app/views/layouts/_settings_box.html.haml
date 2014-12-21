@@ -1,0 +1,54 @@
+#ace-settings-container.ace-settings-container
+  #ace-settings-btn.btn.btn-app.btn-xs.btn-warning.ace-settings-btn
+    %i.ace-icon.fa.fa-cog.bigger-130
+  #ace-settings-box.ace-settings-box.clearfix
+    .pull-left.width-50
+      / #section:settings.skins
+      .ace-settings-item
+        .pull-left
+          %select#skin-colorpicker.hide
+            %option{"data-skin" => "no-skin", :value => "#438EB9"} #438EB9
+            %option{"data-skin" => "skin-1", :value => "#222A2D"} #222A2D
+            %option{"data-skin" => "skin-2", :value => "#C6487E"} #C6487E
+            %option{"data-skin" => "skin-3", :value => "#D0D0D0"} #D0D0D0
+        %span &nbsp; Choose Skin
+      / /section:settings.skins
+      / #section:settings.navbar
+      .ace-settings-item
+        %input#ace-settings-navbar.ace.ace-checkbox-2{:type => "checkbox"}/
+        %label.lbl{:for => "ace-settings-navbar"} Fixed Navbar
+      / /section:settings.navbar
+      / #section:settings.sidebar
+      .ace-settings-item
+        %input#ace-settings-sidebar.ace.ace-checkbox-2{:type => "checkbox"}/
+        %label.lbl{:for => "ace-settings-sidebar"} Fixed Sidebar
+      / /section:settings.sidebar
+      / #section:settings.breadcrumbs
+      .ace-settings-item
+        %input#ace-settings-breadcrumbs.ace.ace-checkbox-2{:type => "checkbox"}/
+        %label.lbl{:for => "ace-settings-breadcrumbs"} Fixed Breadcrumbs
+      / /section:settings.breadcrumbs
+      / #section:settings.rtl
+      .ace-settings-item
+        %input#ace-settings-rtl.ace.ace-checkbox-2{:type => "checkbox"}/
+        %label.lbl{:for => "ace-settings-rtl"} Right To Left (rtl)
+      / /section:settings.rtl
+      / #section:settings.container
+      .ace-settings-item
+        %input#ace-settings-add-container.ace.ace-checkbox-2{:type => "checkbox"}/
+        %label.lbl{:for => "ace-settings-add-container"}
+          Inside
+          %b .container
+    / /section:settings.container
+    / /.pull-left
+    .pull-left.width-50
+      / #section:basics/sidebar.options
+      .ace-settings-item
+        %input#ace-settings-hover.ace.ace-checkbox-2{:type => "checkbox"}/
+        %label.lbl{:for => "ace-settings-hover"} Submenu on Hover
+      .ace-settings-item
+        %input#ace-settings-compact.ace.ace-checkbox-2{:type => "checkbox"}/
+        %label.lbl{:for => "ace-settings-compact"} Compact Sidebar
+      .ace-settings-item
+        %input#ace-settings-highlight.ace.ace-checkbox-2{:type => "checkbox"}/
+        %label.lbl{:for => "ace-settings-highlight"} Alt. Active Item

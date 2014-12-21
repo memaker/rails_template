@@ -1,0 +1,13 @@
+#main-container.main-container
+  :javascript
+    try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+  = render partial: 'layouts/sidebar'
+  .main-content
+    .main-content-inner
+      = render partial: 'layouts/breadcrumbs'
+      .page-content
+        = render partial: 'layouts/settings_box'
+        = yield
+  = render partial: 'layouts/footer'
+  %a#btn-scroll-up.btn-scroll-up.btn.btn-sm.btn-inverse{:href => "#"}
+    %i.ace-icon.fa.fa-angle-double-up.icon-only.bigger-110
