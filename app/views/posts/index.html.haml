@@ -11,5 +11,6 @@
   .col-xs-12
     = render partial: 'posts/shared/tables', locals: {model_class: model_class, posts: @posts}
 
+.space-4
 
 = link_to t('.new', :default => t("helpers.links.new")), new_post_path, :class => 'btn btn-primary'

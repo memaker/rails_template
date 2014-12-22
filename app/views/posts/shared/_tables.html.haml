@@ -31,11 +31,10 @@
         %td
           .hidden-sm.hidden-xs.btn-group
             %button.btn.btn-xs.btn-success
-              = link_to posts_path do
-                %i.ace-icon.fa.fa-check.bigger-120
-            %button.btn.btn-xs.btn-info
+              %i.ace-icon.fa.fa-check.bigger-120
+            = link_to edit_post_path(post), class: 'btn btn-xs btn-info' do
               %i.ace-icon.fa.fa-pencil.bigger-120
-            %button.btn.btn-xs.btn-danger
+            = link_to post_path(post), method: :delete, data: {confirm: t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?'))}, class: 'btn btn-xs btn-danger' do
               %i.ace-icon.fa.fa-trash-o.bigger-120
             %button.btn.btn-xs.btn-warning
               %i.ace-icon.fa.fa-flag.bigger-120
@@ -54,7 +53,7 @@
                     %span.green
                       %i.ace-icon.fa.fa-pencil-square-o.bigger-120
                 %li
-                  = link_to post_path(post), class: 'tooltip-error', title: 'Delete', method: :delete, data: {rel: 'tooltip'} do
+                  = link_to post_path(post), method: :delete, data: {confirm: t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')), rel: 'tooltip'}, title: 'Delete', class: 'tooltip-error' do
                     %span.red
                       %i.ace-icon.fa.fa-trash-o.bigger-120
 
@@ -75,8 +74,9 @@
         %label.pos-rel
           %input.ace{:type => "checkbox"}/
           %span.lbl
-      %th Domain
-      %th Price
+      %th= model_class.human_attribute_name(:id)
+      %th= model_class.human_attribute_name(:title)
+      %th= model_class.human_attribute_name(:description)
       %th.hidden-480 Clicks
       %th
         %i.ace-icon.fa.fa-clock-o.bigger-110.hidden-480
@@ -84,47 +84,45 @@
       %th.hidden-480 Status
       %th
   %tbody
-    %tr
-      %td.center
-        %label.pos-rel
-          %input.ace{:type => "checkbox"}/
-          %span.lbl
-      %td
-        %a{:href => "#"} app.com
-      %td $45
-      %td.hidden-480 3,330
-      %td Feb 12
-      %td.hidden-480
-        %span.label.label-sm.label-warning Expiring
-      %td
-        .hidden-sm.hidden-xs.action-buttons
-          %a.blue{:href => "#"}
-            %i.ace-icon.fa.fa-search-plus.bigger-130
-          %a.green{:href => "#"}
-            %i.ace-icon.fa.fa-pencil.bigger-130
-          %a.red{:href => "#"}
-            %i.ace-icon.fa.fa-trash-o.bigger-130
-        .hidden-md.hidden-lg
-          .inline.pos-rel
-            %button.btn.btn-minier.btn-yellow.dropdown-toggle{"data-position" => "auto", "data-toggle" => "dropdown"}
-              %i.ace-icon.fa.fa-caret-down.icon-only.bigger-120
-            %ul.dropdown-menu.dropdown-only-icon.dropdown-yellow.dropdown-menu-right.dropdown-caret.dropdown-close
-              %li
-                %a.tooltip-info{"data-rel" => "tooltip", :href => "#", :title => "View"}
-                  %span.blue
-                    %i.ace-icon.fa.fa-search-plus.bigger-120
-              %li
-                %a.tooltip-success{"data-rel" => "tooltip", :href => "#", :title => "Edit"}
-                  %span.green
-                    %i.ace-icon.fa.fa-pencil-square-o.bigger-120
-              %li
-                %a.tooltip-error{"data-rel" => "tooltip", :href => "#", :title => "Delete"}
-                  %span.red
-                    %i.ace-icon.fa.fa-trash-o.bigger-120
+    - posts.each do |post|
+      %tr
+        %td.center
+          %label.pos-rel
+            %input.ace{:type => "checkbox"}/
+            %span.lbl
+        %td= post.id
+        %td= post.title
+        %td= post.description
+        %td.hidden-480 3,330
+        %td Feb 12
+        %td.hidden-480
+          %span.label.label-sm.label-warning Expiring
+        %td
+          .hidden-sm.hidden-xs.action-buttons
+            %a.blue{:href => post_path(post)}
+              %i.ace-icon.fa.fa-search-plus.bigger-130
+            %a.green{:href => edit_post_path(post)}
+              %i.ace-icon.fa.fa-pencil.bigger-130
+            = link_to post_path(post), method: :delete, class: 'red', data: {confirm: t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?'))} do
+              %i.ace-icon.fa.fa-trash-o.bigger-130
+          .hidden-md.hidden-lg
+            .inline.pos-rel
+              %button.btn.btn-minier.btn-yellow.dropdown-toggle{"data-position" => "auto", "data-toggle" => "dropdown"}
+                %i.ace-icon.fa.fa-caret-down.icon-only.bigger-120
+              %ul.dropdown-menu.dropdown-only-icon.dropdown-yellow.dropdown-menu-right.dropdown-caret.dropdown-close
+                %li
+                  = link_to post_path(post), data: {rel: 'tooltip'}, title: 'View', class: 'tooltip-info' do
+                    %span.blue
+                      %i.ace-icon.fa.fa-search-plus.bigger-120
+                %li
+                  = link_to edit_post_path(post), data: {rel: 'tooltip'}, title: 'Edit', class: 'tooltip-success' do
+                    %span.green
+                      %i.ace-icon.fa.fa-pencil-square-o.bigger-120
+                %li
+                  = link_to post_path(post), method: :delete, data: {confirm: t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')), rel: 'tooltip'}, title: 'Delete', class: 'tooltip-error' do
+                    %span.red
+                      %i.ace-icon.fa.fa-trash-o.bigger-120
 
-
-:javascript
-  window.jQuery || document.write("<script src='/assets/js/jquery1x.js'>"+"<"+"/script>");
 
 :javascript
   if('ontouchstart' in document.documentElement) document.write("<script src='/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
@@ -167,7 +165,7 @@
                 bAutoWidth: false,
                 "aoColumns": [
                   { "bSortable": false },
-                  null, null,null, null, null,
+                  null, null, null,null, null, null,
                   { "bSortable": false }
                 ],
                 "aaSorting": [],
