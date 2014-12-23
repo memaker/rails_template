@@ -5,12 +5,18 @@
         %i.ace-icon.fa.fa-coffee.green
         Please Enter Your Information
       .space-6
+
+      - if flash[:alert].present?
+        .has-error
+          %span.help-block= flash[:alert]
+
       = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
         %fieldset
           %label.block.clearfix
             %span.block.input-icon.input-icon-right
               = f.text_field :email, class: 'form-control', placeholder: 'Email', autofocus: true
               %i.ace-icon.fa.fa-user
+
           %label.block.clearfix
             %span.block.input-icon.input-icon-right
               = f.password_field :password, class: 'form-control', placeholder: 'Password', autocomplete: 'off'
