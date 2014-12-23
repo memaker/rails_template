@@ -35,6 +35,7 @@ gem 'draper'
 gem 'twitter-bootstrap-rails'
 gem 'simple_form', '3.1.0.rc2'
 gem 'i18n_generators', require: false
+gem 'octokit'
 
 group :development, :test do
   gem 'html2haml', require: false
