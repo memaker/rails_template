@@ -6,23 +6,23 @@
         New User Registration
       .space-6
       %p Enter your details to begin:
-      %form
+      = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
         %fieldset
           %label.block.clearfix
             %span.block.input-icon.input-icon-right
-              %input.form-control{:placeholder => "Email", :type => "email"}/
+              = f.text_field :email, class: 'form-control', placeholder: 'Email'
               %i.ace-icon.fa.fa-envelope
+          -#%label.block.clearfix
+          -#  %span.block.input-icon.input-icon-right
+          -#    %input.form-control{:placeholder => "Username", :type => "text"}/
+          -#    %i.ace-icon.fa.fa-user
           %label.block.clearfix
             %span.block.input-icon.input-icon-right
-              %input.form-control{:placeholder => "Username", :type => "text"}/
-              %i.ace-icon.fa.fa-user
-          %label.block.clearfix
-            %span.block.input-icon.input-icon-right
-              %input.form-control{:placeholder => "Password", :type => "password"}/
+              = f.password_field :password, class: 'form-control', placeholder: 'Password', autocomplete: 'off'
               %i.ace-icon.fa.fa-lock
           %label.block.clearfix
             %span.block.input-icon.input-icon-right
-              %input.form-control{:placeholder => "Repeat password", :type => "password"}/
+              = f.password_field :password_confirmation, class: 'form-control', placeholder: 'Repeat password', autocomplete: 'off'
               %i.ace-icon.fa.fa-retweet
           %label.block
             %input.ace{:type => "checkbox"}/
@@ -34,7 +34,7 @@
             %button.width-30.pull-left.btn.btn-sm{:type => "reset"}
               %i.ace-icon.fa.fa-refresh
               %span.bigger-110 Reset
-            %button.width-65.pull-right.btn.btn-sm.btn-success{:type => "button"}
+            %button.width-65.pull-right.btn.btn-sm.btn-success{:type => "submit"}
               %span.bigger-110 Register
               %i.ace-icon.fa.fa-arrow-right.icon-on-right
     .toolbar.center
