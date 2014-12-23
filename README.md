@@ -1,19 +1,22 @@
 rails_template
 ----
 
-Railsのベース
+A template for a Rails 4 application for myself.
 
-```
-git init
-bundle init # gem 'rails' を追記
-bundle install --path vendor/bundle
-bundle exec rails new .
-```
 
-DB名変更
+License
+----
 
-```
-bundle exec rake db:create
-```
+This application uses `Ace Admin Template` partially. Use of this template is bound by the license you purchase.
 
-gemを追加、セットアップ
+Details:
+https://wrapbootstrap.com/theme/ace-responsive-admin-template-WB0B30DGR
+
+
+Memo
+----
+
+Before I use,
+
+* Change DB name
+* Replace application name in code
