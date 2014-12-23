@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.1.8'
 
 gem 'mysql2'
+gem 'mongoid'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
