@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  resources :contributors
-
   devise_for :users
 
   devise_scope :user do
@@ -8,6 +6,7 @@ Rails.application.routes.draw do
   end
 
   resources :posts
+  resources :contributors
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

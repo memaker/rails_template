@@ -1,2 +1,4 @@
-class Contributor < ActiveRecord::Base
+class Contributor
+  include Mongoid::Document
+  include Mongoid::Timestamps
 end
