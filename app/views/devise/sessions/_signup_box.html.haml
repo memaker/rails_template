@@ -8,22 +8,32 @@
       %p Enter your details to begin:
       = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
         %fieldset
-          %label.block.clearfix
+          %label{ class: "block clearfix #{'has-error' if resource.errors[:email].present?}" }
             %span.block.input-icon.input-icon-right
               = f.text_field :email, class: 'form-control', placeholder: 'Email'
               %i.ace-icon.fa.fa-envelope
+            - if resource.errors[:email].present?
+              %span.help-block= resource.errors[:email].join(', ')
+
           -#%label.block.clearfix
           -#  %span.block.input-icon.input-icon-right
           -#    %input.form-control{:placeholder => "Username", :type => "text"}/
           -#    %i.ace-icon.fa.fa-user
-          %label.block.clearfix
+
+          %label{ class: "block clearfix #{'has-error' if resource.errors[:password].present?}" }
             %span.block.input-icon.input-icon-right
               = f.password_field :password, class: 'form-control', placeholder: 'Password', autocomplete: 'off'
               %i.ace-icon.fa.fa-lock
-          %label.block.clearfix
+            - if resource.errors[:password].present?
+              %span.help-block= resource.errors[:password].join(', ')
+
+          %label{ class: "block clearfix #{'has-error' if resource.errors[:password_confirmation].present?}" }
             %span.block.input-icon.input-icon-right
               = f.password_field :password_confirmation, class: 'form-control', placeholder: 'Repeat password', autocomplete: 'off'
               %i.ace-icon.fa.fa-retweet
+            - if resource.errors[:password_confirmation].present?
+              %span.help-block= resource.errors[:password_confirmation].join(', ')
+
           %label.block
             %input.ace{:type => "checkbox"}/
             %span.lbl
