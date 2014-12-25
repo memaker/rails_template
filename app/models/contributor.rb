@@ -5,7 +5,7 @@ class Contributor
   field :github_user_id, type: Integer
   field :repository_id, type: Integer
 
-  attr_accessor :github_user, :repository, :commits
+  attr_accessor :github_user, :repository, :commits, :issues
 
   index({ github_user_id: 1 }, { unique: true, background: true })
   index({ repository_id: 1 }, { unique: true, background: true })
@@ -23,6 +23,23 @@ class Contributor
         else
           Commit.create_from_string(repository.full_name, commit.sha)
         end
+      end
+  end
+
+  def fetch_issues
+    self.github_user = fetch_user
+    self.repository = fetch_repository
+
+    Octokit.issues(repository.full_name, assignee: github_user.login)
+
+    self.issues =
+      if Issue.where(full_name: repository.full_name, related_to: github_user.login).exists?
+        Issue.where(full_name: repository.full_name, related_to: github_user.login)
+      else
+        _issues = Octokit.issues(repository.full_name, assignee: github_user.login)
+        _issues += Octokit.issues(repository.full_name, creator: github_user.login)
+        _issues.uniq!{|i| i.number }
+        _issues.map { |issue| Issue.create_from_sawyer(issue, github_user.login) }
       end
   end
 
