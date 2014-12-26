@@ -4,6 +4,9 @@ class ContributorsController < ApplicationController
   respond_to :html
 
   def index
+    @full_name = params[:full_name] # octocat/Hello-World
+    @login = params[:login]         # octocat
+
     @contributors = Contributor.all
     respond_with(@contributors)
   end

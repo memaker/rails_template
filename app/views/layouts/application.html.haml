@@ -1,7 +1,7 @@
 !!! 5
 %html(lang="en")
   - if user_signed_in?
-    - if controller_name == 'posts'
+    - if controller_name == 'posts' || controller_name == 'contributors'
       = render partial: 'layouts/ace/header'
       = render partial: 'layouts/ace/body'
     - else

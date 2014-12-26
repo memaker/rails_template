@@ -1,17 +1,32 @@
-%h1 Listing contributors
+- model_class = Contributor
+.page-header
+  %h1
+    = t '.title', :default => model_class.model_name.human.pluralize(:ja).titleize
+    %small
+      %i.ace-icon.fa.fa-angle-double-right
+      Common form elements and layouts
 
-%table
+.row
+  .col-xs-12
+    .heyy
+      = "full_name: #{@full_name}"
+    .heyy
+      = "login: #{@login}"
+
+.space-8
+
+%table(border="1")
   %tr
-    %th
-    %th
-    %th
+    %th a
+    %th b
+    %th c
 
   - @contributors.each do |contributor|
     %tr
-      %td= link_to 'Show', contributor
-      %td= link_to 'Edit', edit_contributor_path(contributor)
-      %td= link_to 'Destroy', contributor, :method => :delete, :data => { :confirm => 'Are you sure?' }
+      %td= link_to 'Show', contributor, class: 'btn btn-default'
+      %td= link_to 'Edit', edit_contributor_path(contributor), class: 'btn btn-default'
+      %td= link_to 'Destroy', contributor, :method => :delete, :data => { :confirm => 'Are you sure?' }, class: 'btn btn-danger'
 
-%br
+.space-8
 
-= link_to 'New Contributor', new_contributor_path
+= link_to 'New Contributor', new_contributor_path, class: 'btn btn-primary'
