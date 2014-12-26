@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :contributor do
+  factory :contribution do
     
   end
 

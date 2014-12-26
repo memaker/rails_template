@@ -1,4 +1,4 @@
-class Contributor
+class Contribution
   include Mongoid::Document
   include Mongoid::Timestamps
 
@@ -17,13 +17,13 @@ class Contributor
 
     # TODO fetch in parallel
     self.commits =
-      Octokit.commits(repository.full_name, author: github_user.login).map do |commit|
-        if Commit.where(full_name: repository.full_name, sha: commit.sha).exists?
-          Commit.find_by(full_name: repository.full_name, sha: commit.sha)
-        else
-          Commit.create_from_string(repository.full_name, commit.sha)
+        Octokit.commits(repository.full_name, author: github_user.login).map do |commit|
+          if Commit.where(full_name: repository.full_name, sha: commit.sha).exists?
+            Commit.find_by(full_name: repository.full_name, sha: commit.sha)
+          else
+            Commit.create_from_string(repository.full_name, commit.sha)
+          end
         end
-      end
   end
 
   def fetch_issues
@@ -33,14 +33,14 @@ class Contributor
     Octokit.issues(repository.full_name, assignee: github_user.login)
 
     self.issues =
-      if Issue.where(full_name: repository.full_name, related_to: github_user.login).exists?
-        Issue.where(full_name: repository.full_name, related_to: github_user.login)
-      else
-        _issues = Octokit.issues(repository.full_name, assignee: github_user.login)
-        _issues += Octokit.issues(repository.full_name, creator: github_user.login)
-        _issues.uniq!{|i| i.number }
-        _issues.map { |issue| Issue.create_from_sawyer(issue, github_user.login) }
-      end
+        if Issue.where(full_name: repository.full_name, related_to: github_user.login).exists?
+          Issue.where(full_name: repository.full_name, related_to: github_user.login)
+        else
+          _issues = Octokit.issues(repository.full_name, assignee: github_user.login)
+          _issues += Octokit.issues(repository.full_name, creator: github_user.login)
+          _issues.uniq!{|i| i.number }
+          _issues.map { |issue| Issue.create_from_sawyer(issue, github_user.login) }
+        end
   end
 
   def additions_sum

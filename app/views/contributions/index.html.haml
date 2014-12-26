@@ -1,0 +1,32 @@
+- model_class = Contribution
+.page-header
+  %h1
+    = t '.title', :default => model_class.model_name.human.pluralize(:ja).titleize
+    %small
+      %i.ace-icon.fa.fa-angle-double-right
+      Common form elements and layouts
+
+.row
+  .col-xs-12
+    .heyy
+      = "full_name: #{@full_name}"
+    .heyy
+      = "login: #{@login}"
+
+.space-8
+
+%table(border="1")
+  %tr
+    %th a
+    %th b
+    %th c
+
+  - @contributions.each do |contribution|
+    %tr
+      %td= link_to 'Show', contribution, class: 'btn btn-default'
+      %td= link_to 'Edit', edit_contribution_path(contribution), class: 'btn btn-default'
+      %td= link_to 'Destroy', contribution, :method => :delete, :data => { :confirm => 'Are you sure?' }, class: 'btn btn-danger'
+
+.space-8
+
+= link_to 'New Contributor', new_contribution_path, class: 'btn btn-primary'
