@@ -1,6 +1,10 @@
 - model_class = Post
 .page-header
-  %h1=t '.title', :default => model_class.model_name.human.titleize
+  %h1
+    = t '.title', :default => model_class.model_name.human.pluralize(:ja).titleize
+    %small
+      %i.ace-icon.fa.fa-angle-double-right
+      Common form elements and layouts
 
 %p
   %strong= model_class.human_attribute_name(:title) + ':'
