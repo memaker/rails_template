@@ -12,14 +12,16 @@
       = "full_name: #{@full_name}"
     .heyy
       = "login: #{@login}"
+    .heyy
+      = "commits: #{@contribution.commits.size if @contribution.present?}"
 
 .space-8
 
 %table(border="1")
   %tr
-    %th a
-    %th b
-    %th c
+    %th Show
+    %th Edit
+    %th Destroy
 
   - @contributions.each do |contribution|
     %tr

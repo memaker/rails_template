@@ -7,6 +7,29 @@ class ContributionsController < ApplicationController
     @full_name = params[:full_name] # octocat/Hello-World
     @login = params[:login]         # octocat
 
+    if @full_name.present? && @login.present?
+      @contribution = Contribution.find_or_initialize_by(login: @login, full_name: @full_name)
+
+      if @contribution.github_user.blank?
+        github_user = GithubUser.find_or_initialize_by(login: @login)
+        if github_user.new_record?
+          github_user = GithubUser.create_from_string(@login)
+        end
+        @contribution.github_user = github_user
+      end
+
+      if @contribution.repository.blank?
+        repository = Repository.find_or_initialize_by(full_name: @full_name)
+        if repository.new_record?
+          repository = Repository.create_from_string(full_name)
+        end
+        @contribution.repository = repository
+      end
+
+      @contribution.save
+      @contribution.fetch_commits
+    end
+
     @contributions = Contribution.all
     respond_with(@contributions)
   end

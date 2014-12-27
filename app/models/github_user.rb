@@ -7,6 +7,10 @@ class GithubUser
   field :name, type: String   # monalisa octocat
   field :access_token, type: String
 
+  belongs_to :contribution
+
+  validates :login, :name, presence: true
+
   def client
     Octokit::Client.new(access_token: access_token)
   end
