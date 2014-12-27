@@ -12,6 +12,7 @@ class ContributionsController < ApplicationController
       @contribution.fetch_github_user
       @contribution.fetch_repository
       @contribution.fetch_commits
+      @contribution.fetch_issues
 
       @contribution.save
     end

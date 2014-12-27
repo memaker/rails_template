@@ -8,10 +8,9 @@ class Contribution
   has_one :github_user
   has_one :repository
   has_many :commits
+  has_many :issues
 
   validates :login, :full_name, presence: true
-
-  attr_accessor :issues
 
   index({ login: 1, full_name: 1 }, { unique: true, background: true })
 
@@ -38,24 +37,24 @@ class Contribution
   def fetch_commits
     # TODO fetch in parallel
     self.commits =
-      client.commits(repository.full_name, author: github_user.login).map do |commit|
-        if Commit.where(full_name: repository.full_name, sha: commit.sha).exists?
-          Commit.find_by(full_name: repository.full_name, sha: commit.sha)
+      client.commits(full_name, author: login).map do |commit|
+        if Commit.where(full_name: full_name, sha: commit.sha).exists?
+          Commit.find_by(full_name: full_name, sha: commit.sha)
         else
-          Commit.create_from_string(repository.full_name, commit.sha)
+          Commit.create_from_string(full_name, commit.sha)
         end
       end
   end
 
   def fetch_issues
     self.issues =
-      if Issue.where(full_name: repository.full_name, related_to: github_user.login).exists?
-        Issue.where(full_name: repository.full_name, related_to: github_user.login)
+      if Issue.where(full_name: full_name, related_to: login).exists?
+        Issue.where(full_name: full_name, related_to: login)
       else
-        _issues = client.issues(repository.full_name, assignee: github_user.login)
-        _issues += client.issues(repository.full_name, creator: github_user.login)
+        _issues = client.issues(full_name, assignee: login)
+        _issues += client.issues(full_name, creator: login)
         _issues.uniq! { |i| i.number }
-        _issues.map { |issue| Issue.create_from_sawyer(issue, github_user.login) }
+        _issues.map { |issue| Issue.create_from_sawyer(issue, login) }
       end
   end
 

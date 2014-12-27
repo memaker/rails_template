@@ -8,12 +8,14 @@
 
 .row
   .col-xs-12
-    .heyy
+    .full_name
       = "full_name: #{@full_name}"
-    .heyy
+    .login
       = "login: #{@login}"
-    .heyy
+    .commits
       = "commits: #{@contribution.commits.size if @contribution.present?}"
+    .issues
+      = "issues: #{@contribution.issues.size if @contribution.present?}"
 
 .space-8
 

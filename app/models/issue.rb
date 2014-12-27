@@ -9,6 +9,10 @@ class Issue
   field :creator, type: String
   field :assignee, type: String
 
+  belongs_to :contribution
+
+  validates :related_to, :number, :full_name, :state, :creator, :assignee, presence: true
+
   index({ number: 1, full_name: 1 }, { unique: true, background: true })
 
   def closed?
