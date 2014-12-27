@@ -11,9 +11,9 @@ class ContributionsController < ApplicationController
       @contribution = Contribution.find_or_initialize_by(login: @login, full_name: @full_name)
       @contribution.fetch_github_user
       @contribution.fetch_repository
+      @contribution.fetch_commits
 
       @contribution.save
-      @contribution.fetch_commits
     end
 
     @contributions = Contribution.all

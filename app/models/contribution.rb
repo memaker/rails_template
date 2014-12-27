@@ -17,9 +17,9 @@ class Contribution
 
   def fetch_github_user
     if github_user.blank?
-      _github_user = GithubUser.find_or_initialize_by(login: @login)
+      _github_user = GithubUser.find_or_initialize_by(login: login)
       if _github_user.new_record?
-        _github_user = GithubUser.create_from_string(@login)
+        _github_user = GithubUser.create_from_string(login)
       end
       self.github_user = _github_user
     end
@@ -27,7 +27,7 @@ class Contribution
 
   def fetch_repository
     if repository.blank?
-      _repository = Repository.find_or_initialize_by(full_name: @full_name)
+      _repository = Repository.find_or_initialize_by(full_name: full_name)
       if _repository.new_record?
         _repository = Repository.create_from_string(full_name)
       end
@@ -37,7 +37,7 @@ class Contribution
 
   def fetch_commits
     # TODO fetch in parallel
-    commits =
+    self.commits =
       client.commits(repository.full_name, author: github_user.login).map do |commit|
         if Commit.where(full_name: repository.full_name, sha: commit.sha).exists?
           Commit.find_by(full_name: repository.full_name, sha: commit.sha)
