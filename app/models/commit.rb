@@ -14,7 +14,7 @@ class Commit
   index({ full_name: 1, sha: 1 }, { unique: true, background: true })
 
   def self.create_from_string(full_name, sha)
-    create_from_sawyer(Octokit.commit(full_name, sha))
+    create_from_sawyer(OctokitUtil.client.commit(full_name, sha))
   end
 
   private

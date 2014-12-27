@@ -16,7 +16,7 @@ class GithubUser
   end
 
   def self.create_from_string(user)
-    create_from_sawyer(Octokit.user(user))
+    create_from_sawyer(OctokitUtil.client.user(user))
   end
 
   private

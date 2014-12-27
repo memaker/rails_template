@@ -38,7 +38,7 @@ class Contribution
   def fetch_commits
     # TODO fetch in parallel
     commits =
-      Octokit.commits(repository.full_name, author: github_user.login).map do |commit|
+      client.commits(repository.full_name, author: github_user.login).map do |commit|
         if Commit.where(full_name: repository.full_name, sha: commit.sha).exists?
           Commit.find_by(full_name: repository.full_name, sha: commit.sha)
         else
@@ -52,8 +52,8 @@ class Contribution
       if Issue.where(full_name: repository.full_name, related_to: github_user.login).exists?
         Issue.where(full_name: repository.full_name, related_to: github_user.login)
       else
-        _issues = Octokit.issues(repository.full_name, assignee: github_user.login)
-        _issues += Octokit.issues(repository.full_name, creator: github_user.login)
+        _issues = client.issues(repository.full_name, assignee: github_user.login)
+        _issues += client.issues(repository.full_name, creator: github_user.login)
         _issues.uniq! { |i| i.number }
         _issues.map { |issue| Issue.create_from_sawyer(issue, github_user.login) }
       end
@@ -69,4 +69,7 @@ class Contribution
 
   private
 
+  def client
+    OctokitUtil.client
+  end
 end

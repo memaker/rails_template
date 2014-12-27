@@ -11,7 +11,7 @@ class Repository
   validates :id, presence: true, numericality: {only_integer: true}
 
   def self.create_from_string(repo)
-    create_from_sawyer(Octokit.repository(repo))
+    create_from_sawyer(OctokitUtil.client.repository(repo))
   end
 
   private
