@@ -15,6 +15,26 @@ class Contribution
 
   index({ login: 1, full_name: 1 }, { unique: true, background: true })
 
+  def fetch_github_user
+    if github_user.blank?
+      _github_user = GithubUser.find_or_initialize_by(login: @login)
+      if _github_user.new_record?
+        _github_user = GithubUser.create_from_string(@login)
+      end
+      self.github_user = _github_user
+    end
+  end
+
+  def fetch_repository
+    if repository.blank?
+      _repository = Repository.find_or_initialize_by(full_name: @full_name)
+      if _repository.new_record?
+        _repository = Repository.create_from_string(full_name)
+      end
+      self.repository = _repository
+    end
+  end
+
   def fetch_commits
     # TODO fetch in parallel
     commits =
