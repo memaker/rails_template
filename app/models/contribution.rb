@@ -7,16 +7,17 @@ class Contribution
 
   has_one :github_user
   has_one :repository
+  has_many :commits
 
   validates :login, :full_name, presence: true
 
-  attr_accessor :commits, :issues
+  attr_accessor :issues
 
   index({ login: 1, full_name: 1 }, { unique: true, background: true })
 
   def fetch_commits
     # TODO fetch in parallel
-    self.commits =
+    commits =
       Octokit.commits(repository.full_name, author: github_user.login).map do |commit|
         if Commit.where(full_name: repository.full_name, sha: commit.sha).exists?
           Commit.find_by(full_name: repository.full_name, sha: commit.sha)
