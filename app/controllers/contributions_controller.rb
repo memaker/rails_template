@@ -17,8 +17,48 @@ class ContributionsController < ApplicationController
       @contribution.save
     end
 
+    @hey = hey(@contribution.commits)
+
     @contributions = Contribution.all
     respond_with(@contributions)
+  end
+
+  def hey(commits)
+    today = DateTime.now.utc.to_date
+
+    commits_data = (today.beginning_of_week..today.end_of_week).map do |date|
+      commits.select{|c| c.date.to_date == date }.size
+    end
+
+    additions_data = (today.beginning_of_week..today.end_of_week).map do |date|
+      commits.select{|c| c.date.to_date == date }.sum{|c| c.stats[:additions] }
+    end
+
+    deletions_data = (today.beginning_of_week..today.end_of_week).map do |date|
+      commits.select{|c| c.date.to_date == date }.sum{|c| c.stats[:deletions] }
+    end
+
+    [
+      {
+        type: 'column',
+        name: 'commits',
+        pointInterval: 24 * 3_600 * 1_000,
+        pointStart: DateTime.now.utc.beginning_of_week.to_i * 1_000,
+        data: commits_data
+      }, {
+        type: 'column',
+        name: 'additions',
+        pointInterval: 24 * 3_600 * 1_000,
+        pointStart: DateTime.now.utc.beginning_of_week.to_i * 1_000,
+        data: additions_data
+      }, {
+        type: 'column',
+        name: 'deletions',
+        pointInterval: 24 * 3_600 * 1_000,
+        pointStart: DateTime.now.utc.beginning_of_week.to_i * 1_000,
+        data: deletions_data
+      }
+    ]
   end
 
   def show

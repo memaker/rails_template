@@ -35,9 +35,12 @@ class Contribution
   end
 
   def fetch_commits
+    # DEBUG CODE
+    sha = full_name.include?('rails_template') ? 'contributor' : 'master'
+
     # TODO fetch in parallel
     self.commits =
-      client.commits(full_name, author: login).map do |commit|
+      client.commits(full_name, author: login, sha: sha).map do |commit|
         if Commit.where(full_name: full_name, sha: commit.sha).exists?
           Commit.find_by(full_name: full_name, sha: commit.sha)
         else
