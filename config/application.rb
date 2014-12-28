@@ -22,6 +22,9 @@ module RailsTemplate
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     config.i18n.default_locale = :ja
 
+    # Configure fallbacks for mongoid errors
+    config.i18n.fallbacks = {'ja' => 'en'}
+
     config.action_view.field_error_proc = Proc.new { |html_tag, instance|
       "#{html_tag}".html_safe
     }
