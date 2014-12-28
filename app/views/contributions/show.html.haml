@@ -6,82 +6,12 @@
       %i.ace-icon.fa.fa-angle-double-right
       Common form elements and layouts
 
-.row
-  .col-xs-12
-    .full_name
-      = "full_name: #{@full_name}"
-    .login
-      = "login: #{@login}"
-    .commits
-      .num= "commits: #{@contribution.commits.size if @contribution.present?}"
-      - @contribution.commits.to_a.sort_by{|c| c.date }.reverse.each do |commit|
-        .commit= "#{commit.date} #{commit.stats[:additions]} #{commit.stats[:deletions]} #{commit.message}"
-    .issues
-      = "issues: #{@contribution.issues.size if @contribution.present?}"
+.chart-all-data{'data-all' => @commits_stats[:all].to_json}
+.chart-additions-data{'data-additions' => @commits_stats[:additions].to_json}
+.chart-deletions-data{'data-deletions' => @commits_stats[:deletions].to_json}
 
-.row
-  .col-xs-12
-    #chart
-
-#hey{'data-hey' => @hey.to_json}
-
+%link{:href => "/assets/css/keen-dashboards.css", :rel => "stylesheet"}/
 %script{:src => "/assets/js/highcharts.js"}
 %script{:src => "/assets/js/modules/exporting.js"}
 
-:javascript
-  $(function () {
-    var series = $('#hey').data('hey');
-    console.log(series);
-
-    $('#chart').highcharts({
-      chart: {
-        //zoomType: 'x'
-      },
-      title: {
-        text: 'USD to EUR exchange rate from 2006 through 2008'
-      },
-      subtitle: {
-        text: document.ontouchstart === undefined ?
-          'Click and drag in the plot area to zoom in' :
-          'Pinch the chart to zoom in'
-      },
-      xAxis: {
-        type: 'datetime'
-        //minRange: 14 * 24 * 3600000 // fourteen days
-      },
-      yAxis: {
-        title: {
-          text: 'Exchange rate'
-        }
-      },
-      legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0
-      },
-      plotOptions: {
-        //area: {
-        //  fillColor: {
-        //    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
-        //    stops: [
-        //      [0, Highcharts.getOptions().colors[0]],
-        //      [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-        //    ]
-        //  },
-        //  marker: {
-        //    radius: 2
-        //  },
-        //  lineWidth: 1,
-        //  states: {
-        //    hover: {
-        //      lineWidth: 1
-        //    }
-        //  },
-        //  threshold: null
-        //}
-      },
-
-      series: series
-    });
-  });
+= render partial: 'contributions/shared/split_rows', locals: {contribution: @contribution}
