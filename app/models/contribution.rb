@@ -10,6 +10,8 @@ class Contribution
   has_many :commits
   has_many :issues
 
+  attr_accessor :rivals
+
   validates :login, :full_name, presence: true
 
   index({ login: 1, full_name: 1 }, { unique: true, background: true })
@@ -59,6 +61,43 @@ class Contribution
         _issues.uniq! { |i| i.number }
         _issues.map { |issue| Issue.create_from_sawyer(issue, login) }
       end
+  end
+
+  def fetch_rivals
+    # DEBUG CODE
+    sha = full_name.include?('rails_template') ? 'contributor' : 'master'
+
+    # TODO fetch in parallel
+    rival_commits =
+      client.commits(full_name, sha: sha).map do |commit|
+        if Commit.where(full_name: full_name, sha: commit.sha).exists?
+          Commit.find_by(full_name: full_name, sha: commit.sha)
+        else
+          Commit.create_from_string(full_name, commit.sha)
+        end
+      end
+
+    _rivals =
+      rival_commits.inject({}) do |memo, commit|
+        login = commit.author_login
+        stats = commit.stats
+        if memo[login].nil?
+          memo[login] = stats
+        else
+          memo[login] =
+            {
+              additions: memo[login][:additions] + stats[:additions],
+              deletions: memo[login][:deletions] + stats[:deletions],
+              total: memo[login][:total] + stats[:total],
+            }
+        end
+
+        memo
+      end
+
+    self.rivals =
+      # _rivals.map{|login, stats| Hashie::Mash.new({login: login, stats: stats}) }
+      _rivals.map{|login, stats| {login: login, stats: stats} }
   end
 
   def additions_sum

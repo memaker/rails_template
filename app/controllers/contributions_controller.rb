@@ -89,6 +89,7 @@ class ContributionsController < ApplicationController
       @contribution.fetch_repository
       @contribution.fetch_commits
       @contribution.fetch_issues
+      @contribution.fetch_rivals
 
       @contribution.save
     end
