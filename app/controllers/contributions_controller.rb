@@ -28,20 +28,21 @@ class ContributionsController < ApplicationController
     point_start_seconds = DateTime.now.utc.beginning_of_week.to_i
     _base_data = {
       type: 'column',
-      name: 'commits',
+      name: nil,
       pointInterval: 24 * 3_600 * 1_000,
       pointStart: point_start_seconds * 1_000,
       data: nil
     }
 
-    commits_data = _base_data.deep_dup.merge(data: commits_data)
-    additions_data = _base_data.deep_dup.merge(data: additions_data)
-    deletions_data = _base_data.deep_dup.merge(data: deletions_data)
+    commits_data = _base_data.deep_dup.merge(data: commits_data, name: 'commits')
+    additions_data = _base_data.deep_dup.merge(data: additions_data, name: 'additions')
+    deletions_data = _base_data.deep_dup.merge(data: deletions_data, name: 'deletions')
 
     {
       start_day: start_day,
       end_day: end_day,
       all: [commits_data, additions_data, deletions_data],
+      commits: [commits_data],
       additions: [additions_data],
       deletions: [deletions_data],
     }
