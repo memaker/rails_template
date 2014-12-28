@@ -14,7 +14,7 @@
       .chart-title
         Cell Title
       .chart-stage
-        %img{"data-src" => "holder.js/100%x240/white"}/
+        #grid-1-2
       .chart-notes
         Notes about this chart
 
@@ -120,4 +120,49 @@
         data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
       }]
     });
+    
+  $('#grid-1-2').highcharts({
+    chart: {
+      plotBackgroundColor: null,
+      plotBorderWidth: 1,//null,
+      plotShadow: false
+    },
+    title: {
+      text: 'Browser market shares at a specific website, 2014'
+    },
+    tooltip: {
+      pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: true,
+          format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+          style: {
+            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+          }
+        }
+      }
+    },
+    series: [{
+      type: 'pie',
+      name: 'Browser share',
+      data: [
+        ['Firefox',   45.0],
+        ['IE',     26.8],
+        {
+          name: 'Chrome',
+          y: 12.8,
+          sliced: true,
+          selected: true
+        },
+        ['Safari',  8.5],
+        ['Opera',   6.2],
+        ['Others',   0.7]
+      ]
+    }]
+  });
+
   });
