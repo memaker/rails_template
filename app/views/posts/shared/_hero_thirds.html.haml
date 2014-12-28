@@ -1,12 +1,10 @@
-%link{:href => "/assets/css/keen-dashboards.css", :rel => "stylesheet"}/
-
 .row
   .col-sm-8
     .chart-wrapper
       .chart-title
         Cell Title
       .chart-stage
-        #grid-1-1
+        #hero-thirds-grid-1-1
       .chart-notes
         Notes about this chart
   .col-sm-4
@@ -14,7 +12,7 @@
       .chart-title
         Cell Title
       .chart-stage
-        #grid-1-2
+        #hero-thirds-grid-1-2
       .chart-notes
         Notes about this chart
 
@@ -69,12 +67,9 @@
       .chart-notes
         Notes about this chart
 
-%script{:src => "/assets/js/highcharts.js"}
-%script{:src => "/assets/js/modules/exporting.js"}
-
 :javascript
   $(function () {
-    $('#grid-1-1').highcharts({
+    $('#hero-thirds-grid-1-1').highcharts({
       title: {
         text: 'Monthly Average Temperature',
         x: -20 //center
@@ -120,8 +115,8 @@
         data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
       }]
     });
-    
-  $('#grid-1-2').highcharts({
+
+  $('#hero-thirds-grid-1-2').highcharts({
     chart: {
       plotBackgroundColor: null,
       plotBorderWidth: 1,//null,
