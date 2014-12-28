@@ -11,7 +11,7 @@ class Issue
 
   belongs_to :contribution
 
-  validates :related_to, :number, :full_name, :state, :creator, :assignee, presence: true
+  validates :related_to, :number, :full_name, :state, :creator, presence: true
 
   index({ number: 1, full_name: 1 }, { unique: true, background: true })
 
@@ -32,7 +32,7 @@ class Issue
         full_name: full_name,
         state: issue.state,
         creator: issue.user.login,
-        assignee: issue.assignee.try(:login)
+        assignee: issue.assignee.try(:login) || ''
     )
   end
 end
