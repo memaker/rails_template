@@ -4,21 +4,6 @@ class ContributionsController < ApplicationController
   respond_to :html
 
   def index
-    @full_name = params[:full_name] # octocat/Hello-World
-    @login = params[:login]         # octocat
-
-    if @full_name.present? && @login.present?
-      @contribution = Contribution.find_or_initialize_by(login: @login, full_name: @full_name)
-      @contribution.fetch_github_user
-      @contribution.fetch_repository
-      @contribution.fetch_commits
-      @contribution.fetch_issues
-
-      @contribution.save
-    end
-
-    @hey = hey(@contribution.commits)
-
     @contributions = Contribution.all
     respond_with(@contributions)
   end
@@ -62,6 +47,7 @@ class ContributionsController < ApplicationController
   end
 
   def show
+    @hey = hey(@contribution.commits)
     respond_with(@contribution)
   end
 
@@ -90,11 +76,23 @@ class ContributionsController < ApplicationController
   end
 
   private
-    def set_contribution
-      @contribution = Contribution.find(params[:id])
-    end
 
-    def contribution_params
-      params[:contribution]
+  def set_contribution
+    @full_name = params[:full_name] # octocat/Hello-World
+    @login = params[:login]         # octocat
+
+    if @full_name.present? && @login.present?
+      @contribution = Contribution.find_or_initialize_by(login: @login, full_name: @full_name)
+      @contribution.fetch_github_user
+      @contribution.fetch_repository
+      @contribution.fetch_commits
+      @contribution.fetch_issues
+
+      @contribution.save
     end
+  end
+
+  def contribution_params
+    params[:contribution]
+  end
 end
