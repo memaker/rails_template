@@ -1,5 +1,5 @@
 class ContributionsController < ApplicationController
-  before_action :set_contribution, only: [:show, :edit, :update, :destroy]
+  before_action :set_contribution, only: [:edit, :update, :destroy]
 
   respond_to :html
 
@@ -9,9 +9,32 @@ class ContributionsController < ApplicationController
   end
 
   def show
-    today = DateTime.now.utc.to_date
-    @commits_stats = calc_commits_stats(@contribution.commits, today.beginning_of_week, today.end_of_week)
+    full_name = params[:full_name] # octocat/Hello-World
+    login = params[:login]         # octocat
+    SearchWorker.perform_async(full_name, login)
+    @contribution = Contribution.find_or_initialize_by(login: login, full_name: full_name)
+
     respond_with(@contribution)
+  end
+
+  def search_result
+    full_name = params[:full_name] # octocat/Hello-World
+    login = params[:login]         # octocat
+
+    # * searched for 5 minutes from now
+
+    if Contribution.where(login: login, full_name: full_name).exists?
+      @contribution = Contribution.find_by(login: login, full_name: full_name)
+      if @contribution.updated_at > Time.now - 5.minutes
+        today = DateTime.now.utc.to_date
+        @commits_stats = calc_commits_stats(@contribution.commits, today.beginning_of_week, today.end_of_week)
+        render json: {html: render_to_string(partial: 'search_result')}
+      else
+        render json: {message: 'Wait a minute.'}
+      end
+    else
+      render json: {message: 'Wait a minute.'}
+    end
   end
 
   def new
@@ -77,19 +100,6 @@ class ContributionsController < ApplicationController
   end
 
   def set_contribution
-    full_name = params[:full_name] # octocat/Hello-World
-    login = params[:login]         # octocat
-
-    if full_name.present? && login.present?
-      @contribution = Contribution.find_or_initialize_by(login: login, full_name: full_name)
-      @contribution.fetch_github_user
-      @contribution.fetch_repository
-      @contribution.fetch_commits
-      @contribution.fetch_issues
-      @contribution.fetch_rivals
-
-      @contribution.save
-    end
   end
 
   def contribution_params

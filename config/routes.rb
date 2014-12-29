@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
   # resources :contributions
   get 'contributions' => 'contributions#show'
+  get 'contributions/search_result' => 'contributions#search_result'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

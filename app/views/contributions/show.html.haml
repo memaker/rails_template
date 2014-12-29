@@ -1,4 +1,3 @@
-- model_class = Contribution
 .page-header
   %h1
     = "#{@contribution.login}'s contribution to #{@contribution.full_name}"
@@ -6,13 +5,18 @@
       %i.ace-icon.fa.fa-angle-double-right
       Common form elements and layouts
 
-.chart-all-data{'data-series' => @commits_stats[:all].to_json}
-.chart-commits-data{'data-series' => @commits_stats[:commits].to_json}
-.chart-additions-data{'data-series' => @commits_stats[:additions].to_json}
-.chart-deletions-data{'data-series' => @commits_stats[:deletions].to_json}
-
+%script{:src => "/assets/contributions.js"}
 %link{:href => "/assets/css/keen-dashboards.css", :rel => "stylesheet"}/
 %script{:src => "/assets/js/highcharts.js"}
 %script{:src => "/assets/js/modules/exporting.js"}
 
-= render partial: 'contributions/shared/split_rows', locals: {contribution: @contribution}
+#search-result-container
+
+:javascript
+  $(function(){
+    var options = {
+      url: '#{contributions_search_result_path}',
+      container: $('#search-result-container')
+    }
+    new FetchResultTimer(options).start();
+  });

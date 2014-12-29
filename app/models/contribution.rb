@@ -91,6 +91,18 @@ class Contribution
       end
   end
 
+  def self.fetch_all(login, full_name)
+    contribution = Contribution.find_or_initialize_by(login: login, full_name: full_name)
+    contribution.fetch_github_user
+    contribution.fetch_repository
+    contribution.fetch_commits
+    contribution.fetch_issues
+    contribution.fetch_rivals
+    contribution.save
+
+    contribution
+  end
+
   def additions_sum
     commits.inject(0){|sum, commit| sum + commit.stats[:additions] }
   end
