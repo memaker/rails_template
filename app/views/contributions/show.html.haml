@@ -10,12 +10,12 @@
 %script{:src => "/assets/js/highcharts.js"}
 %script{:src => "/assets/js/modules/exporting.js"}
 
-#search-result-container
+#search-result-container processing.
 
 :javascript
   $(function(){
     var options = {
-      url: '#{contributions_search_result_path}',
+      url: '#{contributions_search_result_path(login: @contribution.login, full_name: @contribution.full_name)}',
       container: $('#search-result-container')
     }
     new FetchResultTimer(options).start();

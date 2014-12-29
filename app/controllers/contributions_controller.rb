@@ -21,14 +21,13 @@ class ContributionsController < ApplicationController
     full_name = params[:full_name] # octocat/Hello-World
     login = params[:login]         # octocat
 
-    # * searched for 5 minutes from now
-
     if Contribution.where(login: login, full_name: full_name).exists?
-      @contribution = Contribution.find_by(login: login, full_name: full_name)
-      if @contribution.updated_at > Time.now - 5.minutes
+      contribution = Contribution.find_by(login: login, full_name: full_name)
+
+      if contribution.recently_fetched?
         today = DateTime.now.utc.to_date
-        @commits_stats = calc_commits_stats(@contribution.commits, today.beginning_of_week, today.end_of_week)
-        render json: {html: render_to_string(partial: 'search_result')}
+        commits_stats = calc_commits_stats(contribution.commits, today.beginning_of_week, today.end_of_week)
+        render json: {html: render_to_string(partial: 'search_result', locals: {contribution: contribution, commits_stats: commits_stats})}
       else
         render json: {message: 'Wait a minute.'}
       end

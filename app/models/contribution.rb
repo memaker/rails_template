@@ -4,6 +4,8 @@ class Contribution
 
   field :login, type: String
   field :full_name, type: String
+  field :searched_at, type: Time # touch when search is started
+  field :fetched_at, type: Time  # touch when fetch is finished
 
   has_one :github_user
   has_one :repository
@@ -93,14 +95,26 @@ class Contribution
 
   def self.fetch_all(login, full_name)
     contribution = Contribution.find_or_initialize_by(login: login, full_name: full_name)
+    contribution.touch(:searched_at)
+    contribution.save
+
     contribution.fetch_github_user
     contribution.fetch_repository
     contribution.fetch_commits
     contribution.fetch_issues
     contribution.fetch_rivals
+    contribution.touch(:fetched_at)
     contribution.save
 
     contribution
+  end
+
+  def recently_fetched?
+    fetched_at && fetched_at > Time.now - 5.minutes
+  end
+
+  def recently_searched?
+    searched_at && searched_at > Time.now - 5.minutes
   end
 
   def additions_sum

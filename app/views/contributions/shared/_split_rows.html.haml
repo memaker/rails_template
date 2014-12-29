@@ -7,8 +7,6 @@
         #split-rows-grid-1-1
           .commits
             .num= "commits: #{contribution.try(:commits).present? ? contribution.commits.size : 0}"
-          -#- contribution.commits.to_a.sort_by{|c| c.date }.reverse.each do |commit|
-          -#  .commit= "#{commit.date} #{commit.stats[:additions]} #{commit.stats[:deletions]} #{commit.message}"
           .issues
             = "issues: #{contribution.try(:issues).present? ? contribution.issues.size : 0}"
 
@@ -126,7 +124,7 @@
       series: null
     };
 
-    var series = $('.chart-all-data').data('all');
+    var series = $('.chart-all-data').data('series');
     console.log(series);
 
     $('#split-rows-grid-1-2').highcharts(
