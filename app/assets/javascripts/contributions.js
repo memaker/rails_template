@@ -14,7 +14,7 @@ $(function () {
     function FetchResultTimer(options) {
       this.interval = 1000;
       this.loop_num = 0;
-      this.max_loop_num = 5;
+      this.max_loop_num = 10;
 
       assert(options['url'], 'specify url to get search result');
       assert(options['container'], 'specify container to set search result');

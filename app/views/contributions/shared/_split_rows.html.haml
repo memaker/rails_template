@@ -5,6 +5,8 @@
         Cell Title
       .chart-stage
         #split-rows-grid-1-1
+          .start_day= "start day: #{commits_stats[:start_day]}"
+          .end_day= "end day: #{commits_stats[:end_day]}"
           .commits
             .num= "commits: #{contribution.try(:commits).present? ? contribution.commits.size : 0}"
           .issues
@@ -79,7 +81,7 @@
   $(function () {
     var highcharts_params = {
       title: {
-        text: 'USD to EUR exchange rate from 2006 through 2008'
+        text: null
       },
       subtitle: {
         //text: document.ontouchstart === undefined ?

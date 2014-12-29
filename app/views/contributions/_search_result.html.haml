@@ -3,4 +3,4 @@
 .chart-additions-data{'data-series' => commits_stats[:additions].to_json}
 .chart-deletions-data{'data-series' => commits_stats[:deletions].to_json}
 
-= render partial: 'contributions/shared/split_rows', locals: {contribution: contribution}
+= render partial: 'contributions/shared/split_rows', locals: {contribution: contribution, commits_stats: commits_stats}
