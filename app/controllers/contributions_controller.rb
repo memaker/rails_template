@@ -8,6 +8,10 @@ class ContributionsController < ApplicationController
     respond_with(@contributions)
   end
 
+  def search
+    render 'devise/registrations/new'
+  end
+
   def show
     full_name = params[:full_name] # octocat/Hello-World
     login = params[:login]         # octocat
@@ -48,7 +52,7 @@ class ContributionsController < ApplicationController
     commits_stats = result[:commits_stats]
 
     render json: {html: render_to_string(
-             partial: 'search_result',
+             partial: 'knock_knock',
              locals: {contribution: contribution, commits_stats: commits_stats, contributors: contributors}
            )}
   end

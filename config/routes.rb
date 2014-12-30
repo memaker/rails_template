@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resources :posts
 
   # resources :contributions
+  get 'contributions/search' => 'contributions#search'
   get 'contributions' => 'contributions#show'
   get 'contributions/knock_knock' => 'contributions#knock_knock'
 
