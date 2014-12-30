@@ -135,10 +135,4 @@ class Contribution
   def deletions_sum
     commits.inject(0){|sum, commit| sum + commit.stats[:deletions] }
   end
-
-  private
-
-  def client
-    OctokitUtil.client
-  end
 end

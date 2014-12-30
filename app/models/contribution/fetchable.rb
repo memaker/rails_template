@@ -25,10 +25,10 @@ module Contribution::Fetchable
 
   def fetch_commits
     # DEBUG CODE
-    sha = full_name.include?('rails_template') ? 'contributor' : 'master'
+    branch = full_name.include?('rails_template') ? 'contributor' : 'master'
 
-    sawyer_commits = bm('client.commits'){ client.commits(full_name, sha: sha, per_page: 100) }
-    saved_commits = bm('Commit.where'){ Commit.where(full_name: full_name, sha: sawyer_commits.map{|c| c.sha }).to_a }
+    sawyer_commits = bm('client.commits'){ client.commits(full_name, sha: branch, per_page: 100) }
+    saved_commits = bm('Commit.where'){ Commit.where(full_name: full_name, :sha.in => sawyer_commits.map{|c| c.sha }).to_a }
     processed_commits = []
 
     Parallel.each_with_index(sawyer_commits, in_threads: 5) do |commit, i|
@@ -36,7 +36,7 @@ module Contribution::Fetchable
         if saved_commits.any?{|c| c.sha == commit.sha }
           saved_commits.detect{|c| c.sha == commit.sha }
         else
-          Commit.create_from_string(full_name, commit.sha)
+          bm('Commit.create_from_string'){ Commit.create_from_string(full_name, commit.sha) }
         end
 
       processed_commits << {i: i, result: result}
@@ -60,6 +60,12 @@ module Contribution::Fetchable
 
   def bm(name, &block)
     self.class.bm(name, &block)
+  end
+
+  private
+
+  def client
+    OctokitUtil.client
   end
 
   module ClassMethods

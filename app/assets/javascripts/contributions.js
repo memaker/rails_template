@@ -12,7 +12,7 @@ $(function () {
     }
 
     function FetchResultTimer(options) {
-      this.interval = 2000;
+      this.interval = 1000;
       this.loop_num = 0;
       this.max_loop_num = 10;
       this.current_status = '';
