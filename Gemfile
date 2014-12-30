@@ -39,6 +39,7 @@ gem 'octokit'
 gem 'redis'
 gem 'sidekiq'
 gem 'parallel'
+gem 'memoist'
 
 group :development, :test do
   gem 'html2haml', require: false

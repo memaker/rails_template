@@ -2,6 +2,8 @@ class Contribution
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  extend Memoist
+
   field :login, type: String
   field :full_name, type: String
   field :searched_at, type: Time # touch when search is started
@@ -84,11 +86,12 @@ class Contribution
 
   # @return [Hash]
   #   {
-  #     searched_login:                    [Array<Commit>],
-  #     login_has_the_most_commits:        [Array<Commit>],
-  #     login_has_the_second_most_commits: [Array<Commit>],
+  #     searched_login:                     [Array<Commit>],
+  #     login_who_has_the_most_commits:     [Array<Commit>],
+  #     login_who_has_the_2nd_most_commits: [Array<Commit>],
   #     ...
-  #     others:                            [Array<Commit>]
+  #     login_who_has_the_4th_most_commits: [Array<Commit>],
+  #     others:                             [Array<Commit>]
   #   }
   def contributors
     fetch_commits if commits.nil?
@@ -110,6 +113,52 @@ class Contribution
     rivals = Hash[*rivals_array.flat_map{|rival| rival.take(1) + rival.drop(1) }]
     myself.merge(rivals)
   end
+  memoize :contributors
+
+  def commits_stats(start_time, end_time)
+    start_day = start_time.to_date
+    end_day = end_time.to_date
+
+    point_start_seconds = start_time.beginning_of_day.to_i
+    _base_data = {
+      type: 'column',
+      name: nil,
+      pointInterval: 24 * 3_600 * 1_000,
+      pointStart: point_start_seconds * 1_000,
+      data: nil
+    }
+
+    commits_data = []
+    additions_data = []
+    deletions_data  = []
+
+    contributors.each do |login, commits|
+      commits_num = (start_day..end_day).map do |date|
+        commits.select{|c| c.author_date.to_date == date }.size
+      end
+
+      additions_num = (start_day..end_day).map do |date|
+        commits.select{|c| c.author_date.to_date == date }.sum{|c| c.stats[:additions] }
+      end
+
+      deletions_num = (start_day..end_day).map do |date|
+        commits.select{|c| c.author_date.to_date == date }.sum{|c| c.stats[:deletions] }
+      end
+
+      commits_data << _base_data.deep_dup.merge(data: commits_num, name: login)
+      additions_data << _base_data.deep_dup.merge(data: additions_num, name: login)
+      deletions_data << _base_data.deep_dup.merge(data: deletions_num, name: login)
+    end
+
+    {
+      start_day: start_day,
+      end_day: end_day,
+      commits: commits_data,
+      additions: additions_data,
+      deletions: deletions_data,
+    }
+  end
+  memoize :commits_stats
 
   def self.fetch_all(login, full_name)
     contribution = Contribution.find_or_initialize_by(login: login, full_name: full_name)
