@@ -67,15 +67,15 @@ class ContributionsController < ApplicationController
     end_day = end_time.to_date
 
     commits_num = (start_day..end_day).map do |date|
-      commits.select{|c| c.date.to_date == date }.size
+      commits.select{|c| c.author_date.to_date == date }.size
     end
 
     additions_num = (start_day..end_day).map do |date|
-      commits.select{|c| c.date.to_date == date }.sum{|c| c.stats[:additions] }
+      commits.select{|c| c.author_date.to_date == date }.sum{|c| c.stats[:additions] }
     end
 
     deletions_num = (start_day..end_day).map do |date|
-      commits.select{|c| c.date.to_date == date }.sum{|c| c.stats[:deletions] }
+      commits.select{|c| c.author_date.to_date == date }.sum{|c| c.stats[:deletions] }
     end
 
     point_start_seconds = start_time.beginning_of_day.to_i
