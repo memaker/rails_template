@@ -1,3 +1,17 @@
+.space-8
+
+.btn-group
+  %button.btn.btn-primary.btn-white.dropdown-toggle{'data-toggle' => 'dropdown'}
+    Change User
+    %i.ace-icon.fa.fa-angle-down.icon-on-right
+  %ul.dropdown-menu
+    - contributors.each do |login, commits|
+      - next if login.to_s == contribution.login.to_s || contribution.login.to_s == 'others'
+      %li
+        = link_to login, contributions_path(full_name: contribution.full_name, login: login)
+
+%hr
+
 .chart-commits-data{'data-series' => commits_stats[:commits].to_json}
 .chart-additions-data{'data-series' => commits_stats[:additions].to_json}
 .chart-deletions-data{'data-series' => commits_stats[:deletions].to_json}
