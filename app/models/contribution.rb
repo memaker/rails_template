@@ -8,6 +8,7 @@ class Contribution
   field :full_name, type: String
   field :searched_at, type: Time # touch when search is started
   field :fetched_at, type: Time  # touch when fetch is finished
+  field :analyzed_at, type: Time # touch when analyze is finished
   field :fetch_status, type: String
 
   has_one :github_user
@@ -160,7 +161,7 @@ class Contribution
   end
   memoize :commits_stats
 
-  def self.fetch_all(login, full_name)
+  def self.fetch_all(login, full_name, start_day, end_day)
     contribution = Contribution.find_or_initialize_by(login: login, full_name: full_name)
     contribution.touch(:searched_at)
     contribution.update(fetch_status: "Let's go.")
@@ -180,11 +181,27 @@ class Contribution
     logger.info "Fetching issues. #{login} #{full_name}"
     contribution.fetch_issues
     contribution.touch(:fetched_at)
+    contribution.update(fetch_status: 'Fetching is completed.')
+    logger.info "Fetching is completed. #{login} #{full_name}"
+
+    contribution.update(fetch_status: 'Analyzing commits.')
+    logger.info "Analyzing commits. #{login} #{full_name}"
+    result = {
+      contributors: contribution.contributors,
+      commits_stats: contribution.commits_stats(start_day, end_day),
+    }
+    RedisUtil.set("#{login}:#{full_name}", result)
+    contribution.touch(:analyzed_at)
+
     contribution.update(fetch_status: 'Completed.')
     logger.info "Completed. #{login} #{full_name}"
-    contribution.save
 
+    contribution.save
     contribution
+  end
+
+  def recently_analyzed?
+    analyzed_at && analyzed_at > Time.now - 5.minutes
   end
 
   def recently_fetched?

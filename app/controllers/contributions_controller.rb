@@ -11,9 +11,15 @@ class ContributionsController < ApplicationController
   def show
     full_name = params[:full_name] # octocat/Hello-World
     login = params[:login]         # octocat
-    SearchWorker.perform_async(full_name, login)
-    @contribution = Contribution.find_or_initialize_by(login: login, full_name: full_name)
     @date_range = set_date_range
+
+    SearchWorker.perform_async(
+      full_name,
+      login,
+      @date_range[:start_day].to_i,
+      @date_range[:end_day].to_i
+    )
+    @contribution = Contribution.find_or_initialize_by(login: login, full_name: full_name)
 
     respond_with(@contribution)
   end
@@ -22,24 +28,26 @@ class ContributionsController < ApplicationController
     full_name = params[:full_name] # octocat/Hello-World
     login = params[:login]         # octocat
 
-    if Contribution.where(login: login, full_name: full_name).exists?
-      contribution = Contribution.find_by(login: login, full_name: full_name)
-
-      if contribution.recently_fetched?
-        date_range = set_date_range
-        contributors = contribution.contributors
-        commits_stats = contribution.commits_stats(date_range[:start_day], date_range[:end_day])
-
-        render json: {html: render_to_string(
-                 partial: 'search_result',
-                 locals: {contribution: contribution, commits_stats: commits_stats, contributors: contributors}
-               )}
-      else
-        render json: {message: contribution.fetch_status || 'Processing.'}
-      end
-    else
-      render json: {message: 'Creating.'}
+    unless Contribution.where(login: login, full_name: full_name).exists?
+      return render json: {message: 'Creating.'}
     end
+
+    contribution = Contribution.find_by(login: login, full_name: full_name)
+    unless contribution.recently_analyzed?
+      return render json: {message: contribution.fetch_status || 'Processing.'}
+    end
+
+    unless result = RedisUtil.get("#{login}:#{full_name}")
+      return render json: {message: contribution.fetch_status || 'Analyzing.'}
+    end
+
+    contributors = result[:contributors]
+    commits_stats = result[:commits_stats]
+
+    render json: {html: render_to_string(
+             partial: 'search_result',
+             locals: {contribution: contribution, commits_stats: commits_stats, contributors: contributors}
+           )}
   end
 
   def new

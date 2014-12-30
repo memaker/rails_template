@@ -1,12 +1,12 @@
 class SearchWorker
   include Sidekiq::Worker
 
-  def perform(full_name, login)
+  def perform(full_name, login, start_day, end_day)
     if full_name.present? && login.present?
       contribution = Contribution.find_or_initialize_by(login: login, full_name: full_name)
 
       if contribution.new_record?
-        Contribution.fetch_all(login, full_name)
+        Contribution.fetch_all(login, full_name, Time.at(start_day).utc, Time.at(end_day).utc)
         logger.info "Fetching is finished. #{login} #{full_name}"
       else
         if contribution.recently_searched?
