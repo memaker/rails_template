@@ -84,9 +84,11 @@ class Contribution
 
   # @return [Hash]
   #   {
-  #     'login1' => {login: 'login1', commits: [...]},
-  #     'login2' => {login: 'login2', commits: [...]},
+  #     searched_login:                    [Array<Commit>],
+  #     login_has_the_most_commits:        [Array<Commit>],
+  #     login_has_the_second_most_commits: [Array<Commit>],
   #     ...
+  #     others:                            [Array<Commit>]
   #   }
   def arrange_commits_to_focus_on_contributor
     fetch_commits if commits.nil?
@@ -96,13 +98,17 @@ class Contribution
         commits.each_with_object({}) do |commit, memo|
           login = commit.author_login.to_sym
           if memo[login].nil?
-            memo[login] = {login: login, commits: []}
+            memo[login] = []
           end
-          memo[login][:commits] << commit
+          memo[login] << commit
         end
       end
 
-    rivals.merge(login.to_sym => myself[login.to_sym])
+    rivals = rivals.sort_by{|login, commits| commits.size }.reverse
+    rivals_array = rivals.take(4) << [:others, rivals.drop(4).map{|login, commits| commits }.flatten]
+    rivals_array.flat_map{|rival| rival.take(1) + rival.drop(1) }
+    rivals = Hash[*rivals_array.flat_map{|rival| rival.take(1) + rival.drop(1) }]
+    myself.merge(rivals)
   end
 
   def self.fetch_all(login, full_name)

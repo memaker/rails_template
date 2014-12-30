@@ -104,9 +104,6 @@
       series: null
     };
 
-    var series = $('.chart-all-data').data('series');
-    console.log(series);
-
     $('#split-rows-grid-1-2').highcharts(
       $.extend(true, {}, highcharts_params, {series: $('.chart-commits-data').data('series')}));
 
