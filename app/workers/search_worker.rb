@@ -9,14 +9,15 @@ class SearchWorker
         Contribution.fetch_all(login, full_name, Time.at(start_day).utc, Time.at(end_day).utc)
         logger.info "Fetching is finished. #{login} #{full_name}"
       else
-        if contribution.recently_searched?
-          logger.info "Do nothing because maybe another worker is fetching now. #{login} #{full_name}"
+        if contribution.recently_analyzed?
+          logger.info "Do nothing because this contribution is analyzed recently. #{login} #{full_name}"
         elsif contribution.recently_fetched?
-          logger.info "Do nothing because this contribution is fetched for 5 minutes from now. #{login} #{full_name}"
+          logger.info "Do nothing because this contribution is fetched recently. #{login} #{full_name}"
+        elsif contribution.recently_searched?
+          logger.info "Do nothing because maybe another worker is fetching now. #{login} #{full_name}"
         else
           # TODO implement update logic
-          contribution.touch(:searched_at)
-          contribution.touch(:fetched_at)
+          Contribution.fetch_all(login, full_name, Time.at(start_day).utc, Time.at(end_day).utc)
           logger.info "Updating is finished. #{login} #{full_name}"
         end
       end

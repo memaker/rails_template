@@ -3,6 +3,10 @@ class RedisUtil
   CACHE_LIMIT_SECONDS = 600
 
   class << self
+    def exists?(key)
+      instance.exists(key)
+    end
+
     def get(key)
       decode(instance.get(key))
     end

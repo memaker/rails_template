@@ -29,15 +29,18 @@ class ContributionsController < ApplicationController
     login = params[:login]         # octocat
 
     unless Contribution.where(login: login, full_name: full_name).exists?
+      logger.info 'Creating.'
       return render json: {message: 'Creating.'}
     end
 
     contribution = Contribution.find_by(login: login, full_name: full_name)
     unless contribution.recently_analyzed?
+      logger.info contribution.fetch_status || 'Processing.'
       return render json: {message: contribution.fetch_status || 'Processing.'}
     end
 
-    unless result = RedisUtil.get("#{login}:#{full_name}")
+    unless result = RedisUtil.get(contribution.result_key)
+      logger.info contribution.fetch_status || 'Analyzing.'
       return render json: {message: contribution.fetch_status || 'Analyzing.'}
     end
 

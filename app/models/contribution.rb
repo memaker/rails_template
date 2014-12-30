@@ -161,6 +161,7 @@ class Contribution
   end
   memoize :commits_stats
 
+  # Must run in background
   def self.fetch_all(login, full_name, start_day, end_day)
     contribution = Contribution.find_or_initialize_by(login: login, full_name: full_name)
     contribution.touch(:searched_at)
@@ -170,38 +171,57 @@ class Contribution
 
     contribution.update(fetch_status: 'Fetching github user.')
     logger.info "Fetching github user. #{login} #{full_name}"
-    contribution.fetch_github_user
+    bm('fetch_github_user'){ contribution.fetch_github_user }
+
     contribution.update(fetch_status: 'Fetching repository meta data.')
     logger.info "Fetching repository meta data. #{login} #{full_name}"
-    contribution.fetch_repository
+    bm('fetch_repository'){ contribution.fetch_repository }
+
     contribution.update(fetch_status: 'Fetching commits meta data. This is quite time-consuming.')
     logger.info "Fetching commits meta data. This is quite time-consuming. #{login} #{full_name}"
-    contribution.fetch_commits
+    bm('fetch_commits'){ contribution.fetch_commits }
+
     contribution.update(fetch_status: 'Fetching issues.')
     logger.info "Fetching issues. #{login} #{full_name}"
-    contribution.fetch_issues
+    bm('fetch_issues'){ contribution.fetch_issues }
     contribution.touch(:fetched_at)
+
     contribution.update(fetch_status: 'Fetching is completed.')
     logger.info "Fetching is completed. #{login} #{full_name}"
 
     contribution.update(fetch_status: 'Analyzing commits.')
     logger.info "Analyzing commits. #{login} #{full_name}"
     result = {
-      contributors: contribution.contributors,
-      commits_stats: contribution.commits_stats(start_day, end_day),
+      contributors: bm('contributors'){ contribution.contributors },
+      commits_stats: bm('commits_stats'){ contribution.commits_stats(start_day, end_day) },
     }
-    RedisUtil.set("#{login}:#{full_name}", result)
+    RedisUtil.set(result_key(login, full_name), result)
     contribution.touch(:analyzed_at)
 
-    contribution.update(fetch_status: 'Completed.')
+    contribution.update(fetch_status: nil)
     logger.info "Completed. #{login} #{full_name}"
 
     contribution.save
     contribution
   end
 
+  def self.bm(name, &block)
+    start = Time.now
+    result = yield if block_given?
+    logger.info "BENCHMARK: #{name} #{Time.now - start} sec"
+    result
+  end
+
+  def self.result_key(login, full_name)
+    "result:#{login}:#{full_name}"
+  end
+
+  def result_key
+    self.class.result_key(login, full_name)
+  end
+
   def recently_analyzed?
-    analyzed_at && analyzed_at > Time.now - 5.minutes
+    analyzed_at && analyzed_at > Time.now - 5.minutes && RedisUtil.exists?(result_key)
   end
 
   def recently_fetched?
