@@ -13,8 +13,6 @@ class Contribution
   has_many :commits
   has_many :issues
 
-  attr_accessor :rival_commits
-
   validates :login, :full_name, presence: true
 
   index({ login: 1, full_name: 1 }, { unique: true, background: true })
@@ -39,11 +37,21 @@ class Contribution
     end
   end
 
+  def my_commits
+    fetch_commits if commits.nil?
+    commits.select{|c| c.author_login == login }
+  end
+
+  def rival_commits
+    fetch_commits if commits.nil?
+    commits.reject{|c| c.author_login == login }
+  end
+
   def fetch_commits
     # DEBUG CODE
     sha = full_name.include?('rails_template') ? 'contributor' : 'master'
 
-    sawyer_commits = client.commits(full_name, author: login, sha: sha, per_page: 100)
+    sawyer_commits = client.commits(full_name, sha: sha, per_page: 100)
     saved_commits = Commit.where(full_name: full_name, sha: sawyer_commits.map{|c| c.sha }).to_a
     processed_commits = []
 
@@ -80,34 +88,11 @@ class Contribution
   #     'login2' => {login: 'login2', commits: [...]},
   #     ...
   #   }
-  def fetch_rival_commits
-    # DEBUG CODE
-    sha = full_name.include?('rails_template') ? 'contributor' : 'master'
-
-    sawyer_commits = client.commits(full_name, sha: sha, per_page: 100).reject{|c| c.author.login == login }
-    saved_commits = Commit.where(full_name: full_name, sha: sawyer_commits.map{|c| c.sha }).to_a
-    processed_commits = []
-
-    Parallel.each_with_index(sawyer_commits, in_threads: 5) do |commit, i|
-      result =
-        if saved_commits.any?{|c| c.sha == commit.sha }
-          saved_commits.detect{|c| c.sha == commit.sha }
-        else
-          Commit.create_from_string(full_name, commit.sha)
-        end
-
-      processed_commits << {i: i, result: result}
-    end
-
-    self.rival_commits =
-      processed_commits.sort_by{|p| p[:i] }.map{|p| p[:result] }.flatten
-  end
-
   def arrange_commits_to_focus_on_contributor
-    fetch_rival_commits if rival_commits.nil?
+    fetch_commits if commits.nil?
 
     myself, rivals =
-      [commits, rival_commits].map do |commits|
+      [my_commits, rival_commits].map do |commits|
         commits.each_with_object({}) do |commit, memo|
           login = commit.author_login.to_sym
           if memo[login].nil?
@@ -139,9 +124,6 @@ class Contribution
     contribution.update(fetch_status: 'Fetching issues.')
     logger.info "Fetching issues. #{login} #{full_name}"
     contribution.fetch_issues
-    contribution.update(fetch_status: 'Fetching rival commits. This is quite time-consuming.')
-    logger.info "Fetching rival commits. This is quite time-consuming. #{login} #{full_name}"
-    contribution.fetch_rival_commits
     contribution.touch(:fetched_at)
     contribution.update(fetch_status: 'Completed.')
     logger.info "Completed. #{login} #{full_name}"
