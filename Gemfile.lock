@@ -274,6 +274,7 @@ DEPENDENCIES
   pry-rails
   quiet_assets
   rails (= 4.1.8)
+  redis
   rolify
   rspec-rails
   sass-rails (~> 4.0.3)
