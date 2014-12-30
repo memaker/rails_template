@@ -29,10 +29,10 @@ class ContributionsController < ApplicationController
         commits_stats = calc_commits_stats(contribution.commits, today - 6.days, today)
         render json: {html: render_to_string(partial: 'search_result', locals: {contribution: contribution, commits_stats: commits_stats})}
       else
-        render json: {message: 'Wait a minute.'}
+        render json: {message: contribution.fetch_status || 'Processing.'}
       end
     else
-      render json: {message: 'Wait a minute.'}
+      render json: {message: 'Creating.'}
     end
   end
 

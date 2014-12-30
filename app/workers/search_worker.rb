@@ -21,7 +21,7 @@ class SearchWorker
         end
       end
     else
-      logger.info "Either login or full_name is empty. #{login} #{full_name}"
+      logger.info "Do nothing because either login or full_name is empty. #{login} #{full_name}"
     end
   end
 end

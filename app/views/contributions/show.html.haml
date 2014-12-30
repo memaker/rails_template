@@ -10,7 +10,9 @@
 %script{:src => "/assets/js/highcharts.js"}
 %script{:src => "/assets/js/modules/exporting.js"}
 
-#search-result-container processing.
+#search-result-container
+  = image_tag 'img/loading.gif', size: '16x16'
+  &nbsp;Initializing.
 
 :javascript
   $(function(){

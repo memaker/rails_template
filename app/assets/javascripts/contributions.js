@@ -12,7 +12,7 @@ $(function () {
     }
 
     function FetchResultTimer(options) {
-      this.interval = 1000;
+      this.interval = 2000;
       this.loop_num = 0;
       this.max_loop_num = 10;
 
@@ -36,7 +36,8 @@ $(function () {
           .done(function (json) {
             if (json['message']) {
               me.container
-                  .text(json['message'] + me.counting(me.loop_num));
+                  .html('&nbsp;' + json['message'] + me.counting(me.loop_num))
+                  .prepend($('<img src="/assets/img/loading.gif" width="16" height="16" />'));
               me.start();
             } else {
               me.container

@@ -6,6 +6,7 @@ class Contribution
   field :full_name, type: String
   field :searched_at, type: Time # touch when search is started
   field :fetched_at, type: Time  # touch when fetch is finished
+  field :fetch_status, type: String
 
   has_one :github_user
   has_one :repository
@@ -96,14 +97,21 @@ class Contribution
   def self.fetch_all(login, full_name)
     contribution = Contribution.find_or_initialize_by(login: login, full_name: full_name)
     contribution.touch(:searched_at)
+    contribution.update(fetch_status: "Let's go.")
     contribution.save
 
+    contribution.update(fetch_status: 'Fetching github user.')
     contribution.fetch_github_user
+    contribution.update(fetch_status: 'Fetching repository meta data.')
     contribution.fetch_repository
+    contribution.update(fetch_status: 'Fetching commits meta data. This is quite time-consuming.')
     contribution.fetch_commits
+    contribution.update(fetch_status: 'Fetching issues.')
     contribution.fetch_issues
+    contribution.update(fetch_status: 'Fetching rivals.')
     contribution.fetch_rivals
     contribution.touch(:fetched_at)
+    contribution.update(fetch_status: 'Completed.')
     contribution.save
 
     contribution
