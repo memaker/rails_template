@@ -43,15 +43,22 @@ class Contribution
     # DEBUG CODE
     sha = full_name.include?('rails_template') ? 'contributor' : 'master'
 
-    # TODO fetch in parallel
-    self.commits =
-      client.commits(full_name, author: login, sha: sha, per_page: 100).map do |commit|
+    sawyer_commits = client.commits(full_name, author: login, sha: sha, per_page: 100)
+    processed_commits = []
+
+    Parallel.each_with_index(sawyer_commits, in_threads: sawyer_commits.size) do |commit, i|
+      result =
         if Commit.where(full_name: full_name, sha: commit.sha).exists?
           Commit.find_by(full_name: full_name, sha: commit.sha)
         else
           Commit.create_from_string(full_name, commit.sha)
         end
-      end
+
+      processed_commits << {i: i, result: result}
+    end
+
+    self.commits =
+      processed_commits.sort_by{|p| p[:i] }.map{|p| p[:result] }.flatten
   end
 
   def fetch_issues
@@ -66,6 +73,12 @@ class Contribution
       end
   end
 
+  # @return [Hash]
+  #   {
+  #     'login1' => {login: 'login1', commits: [...]},
+  #     'login2' => {login: 'login2', commits: [...]},
+  #     ...
+  #   }
   def fetch_rivals
     # DEBUG CODE
     sha = full_name.include?('rails_template') ? 'contributor' : 'master'
@@ -92,6 +105,8 @@ class Contribution
 
         memo
       end
+
+    puts 'a'
   end
 
   def self.fetch_all(login, full_name)
