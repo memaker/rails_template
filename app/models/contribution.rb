@@ -13,7 +13,7 @@ class Contribution
   has_many :commits
   has_many :issues
 
-  attr_accessor :rivals
+  attr_accessor :rival_commits
 
   validates :login, :full_name, presence: true
 
@@ -80,7 +80,7 @@ class Contribution
   #     'login2' => {login: 'login2', commits: [...]},
   #     ...
   #   }
-  def fetch_rivals
+  def fetch_rival_commits
     # DEBUG CODE
     sha = full_name.include?('rails_template') ? 'contributor' : 'master'
 
@@ -99,17 +99,25 @@ class Contribution
       processed_commits << {i: i, result: result}
     end
 
-    rival_commits =
+    self.rival_commits =
       processed_commits.sort_by{|p| p[:i] }.map{|p| p[:result] }.flatten
+  end
 
-    self.rivals =
-      rival_commits.each_with_object({}) do |commit, memo|
-        login = commit.author_login
-        if memo[login].nil?
-          memo[login] = {login: login, commits: []}
+  def arrange_commits_to_focus_on_contributor
+    fetch_rival_commits if rival_commits.nil?
+
+    myself, rivals =
+      [commits, rival_commits].map do |commits|
+        commits.each_with_object({}) do |commit, memo|
+          login = commit.author_login.to_sym
+          if memo[login].nil?
+            memo[login] = {login: login, commits: []}
+          end
+          memo[login][:commits] << commit
         end
-        memo[login][:commits] << commit
       end
+
+    rivals.merge(login.to_sym => myself[login.to_sym])
   end
 
   def self.fetch_all(login, full_name)
@@ -131,9 +139,9 @@ class Contribution
     contribution.update(fetch_status: 'Fetching issues.')
     logger.info "Fetching issues. #{login} #{full_name}"
     contribution.fetch_issues
-    contribution.update(fetch_status: 'Fetching rivals. This is quite time-consuming.')
-    logger.info "Fetching rivals. This is quite time-consuming. #{login} #{full_name}"
-    contribution.fetch_rivals
+    contribution.update(fetch_status: 'Fetching rival commits. This is quite time-consuming.')
+    logger.info "Fetching rival commits. This is quite time-consuming. #{login} #{full_name}"
+    contribution.fetch_rival_commits
     contribution.touch(:fetched_at)
     contribution.update(fetch_status: 'Completed.')
     logger.info "Completed. #{login} #{full_name}"

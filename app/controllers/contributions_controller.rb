@@ -26,7 +26,7 @@ class ContributionsController < ApplicationController
 
       if contribution.recently_fetched?
         now_utc = DateTime.now.utc
-        contribution.fetch_rivals
+        a = contribution.arrange_commits_to_focus_on_contributor
         commits_stats = calc_commits_stats(contribution.commits, now_utc - 6.days, now_utc)
         render json: {html: render_to_string(partial: 'search_result', locals: {contribution: contribution, commits_stats: commits_stats})}
       else
