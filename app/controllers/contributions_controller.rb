@@ -25,8 +25,8 @@ class ContributionsController < ApplicationController
       contribution = Contribution.find_by(login: login, full_name: full_name)
 
       if contribution.recently_fetched?
-        today = DateTime.now.utc.to_date
-        commits_stats = calc_commits_stats(contribution.commits, today - 6.days, today)
+        now_utc = DateTime.now.utc
+        commits_stats = calc_commits_stats(contribution.commits, now_utc - 6.days, now_utc)
         render json: {html: render_to_string(partial: 'search_result', locals: {contribution: contribution, commits_stats: commits_stats})}
       else
         render json: {message: contribution.fetch_status || 'Processing.'}
@@ -62,7 +62,10 @@ class ContributionsController < ApplicationController
 
   private
 
-  def calc_commits_stats(commits, start_day, end_day)
+  def calc_commits_stats(commits, start_time, end_time)
+    start_day = start_time.to_date
+    end_day = end_time.to_date
+
     commits_num = (start_day..end_day).map do |date|
       commits.select{|c| c.date.to_date == date }.size
     end
@@ -75,7 +78,7 @@ class ContributionsController < ApplicationController
       commits.select{|c| c.date.to_date == date }.sum{|c| c.stats[:deletions] }
     end
 
-    point_start_seconds = DateTime.now.utc.beginning_of_week.to_i
+    point_start_seconds = start_time.beginning_of_day.to_i
     _base_data = {
       type: 'column',
       name: nil,
