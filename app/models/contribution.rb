@@ -44,12 +44,13 @@ class Contribution
     sha = full_name.include?('rails_template') ? 'contributor' : 'master'
 
     sawyer_commits = client.commits(full_name, author: login, sha: sha, per_page: 100)
+    saved_commits = Commit.where(full_name: full_name, sha: sawyer_commits.map{|c| c.sha }).to_a
     processed_commits = []
 
-    Parallel.each_with_index(sawyer_commits, in_threads: sawyer_commits.size) do |commit, i|
+    Parallel.each_with_index(sawyer_commits, in_threads: 5) do |commit, i|
       result =
-        if Commit.where(full_name: full_name, sha: commit.sha).exists?
-          Commit.find_by(full_name: full_name, sha: commit.sha)
+        if saved_commits.any?{|c| c.sha == commit.sha }
+          saved_commits.detect{|c| c.sha == commit.sha }
         else
           Commit.create_from_string(full_name, commit.sha)
         end
@@ -101,7 +102,7 @@ class Contribution
         if memo[login].nil?
           memo[login] = {login: login, commits: []}
         end
-        memo[login]['commits'] << commit
+        memo[login][:commits] << commit
 
         memo
       end
@@ -113,20 +114,27 @@ class Contribution
     contribution = Contribution.find_or_initialize_by(login: login, full_name: full_name)
     contribution.touch(:searched_at)
     contribution.update(fetch_status: "Let's go.")
+    logger.info "Let's go. #{login} #{full_name}"
     contribution.save
 
     contribution.update(fetch_status: 'Fetching github user.')
+    logger.info "Fetching github user. #{login} #{full_name}"
     contribution.fetch_github_user
     contribution.update(fetch_status: 'Fetching repository meta data.')
+    logger.info "Fetching repository meta data. #{login} #{full_name}"
     contribution.fetch_repository
     contribution.update(fetch_status: 'Fetching commits meta data. This is quite time-consuming.')
+    logger.info "Fetching commits meta data. This is quite time-consuming. #{login} #{full_name}"
     contribution.fetch_commits
     contribution.update(fetch_status: 'Fetching issues.')
+    logger.info "Fetching issues. #{login} #{full_name}"
     contribution.fetch_issues
-    contribution.update(fetch_status: 'Fetching rivals.')
+    contribution.update(fetch_status: 'Fetching rivals. This is quite time-consuming.')
+    logger.info "Fetching rivals. This is quite time-consuming. #{login} #{full_name}"
     contribution.fetch_rivals
     contribution.touch(:fetched_at)
     contribution.update(fetch_status: 'Completed.')
+    logger.info "Completed. #{login} #{full_name}"
     contribution.save
 
     contribution
