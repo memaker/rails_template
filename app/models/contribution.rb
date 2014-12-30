@@ -84,30 +84,32 @@ class Contribution
     # DEBUG CODE
     sha = full_name.include?('rails_template') ? 'contributor' : 'master'
 
-    # TODO fetch in parallel
-    rival_commits =
-      client.commits(full_name, sha: sha, per_page: 100).map do |commit|
-        next if commit.author.login == login
+    sawyer_commits = client.commits(full_name, sha: sha, per_page: 100).reject{|c| c.author.login == login }
+    saved_commits = Commit.where(full_name: full_name, sha: sawyer_commits.map{|c| c.sha }).to_a
+    processed_commits = []
 
-        if Commit.where(full_name: full_name, sha: commit.sha).exists?
-          Commit.find_by(full_name: full_name, sha: commit.sha)
+    Parallel.each_with_index(sawyer_commits, in_threads: 5) do |commit, i|
+      result =
+        if saved_commits.any?{|c| c.sha == commit.sha }
+          saved_commits.detect{|c| c.sha == commit.sha }
         else
           Commit.create_from_string(full_name, commit.sha)
         end
-      end.compact
+
+      processed_commits << {i: i, result: result}
+    end
+
+    rival_commits =
+      processed_commits.sort_by{|p| p[:i] }.map{|p| p[:result] }.flatten
 
     self.rivals =
-      rival_commits.inject({}) do |memo, commit|
+      rival_commits.each_with_object({}) do |commit, memo|
         login = commit.author_login
         if memo[login].nil?
           memo[login] = {login: login, commits: []}
         end
         memo[login][:commits] << commit
-
-        memo
       end
-
-    puts 'a'
   end
 
   def self.fetch_all(login, full_name)
