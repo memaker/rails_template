@@ -24,7 +24,7 @@ class ContributionsController < ApplicationController
     respond_with(@contribution)
   end
 
-  def search_result
+  def knock_knock
     full_name = params[:full_name] # octocat/Hello-World
     login = params[:login]         # octocat
 

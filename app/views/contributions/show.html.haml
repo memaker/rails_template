@@ -19,7 +19,7 @@
 :javascript
   $(function(){
     var options = {
-      url: '#{contributions_search_result_path(login: @contribution.login, full_name: @contribution.full_name)}',
+      url: '#{contributions_knock_knock_path(login: @contribution.login, full_name: @contribution.full_name)}',
       container: $('#search-result-container')
     }
     new FetchResultTimer(options).start();

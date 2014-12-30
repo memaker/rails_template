@@ -1,6 +1,6 @@
 class RedisUtil
   HOST = 'localhost'
-  CACHE_LIMIT_SECONDS = 600
+  CACHE_LIMIT_SECONDS = 60 * 30
 
   class << self
     def exists?(key)
