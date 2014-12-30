@@ -3,7 +3,7 @@
     = "#{@contribution.login}'s contribution to #{@contribution.full_name}"
     %small
       %i.ace-icon.fa.fa-angle-double-right
-      Common form elements and layouts
+      = "#{@date_range[:start_day].to_date.to_s(:slash)} - #{@date_range[:end_day].to_date.to_s(:slash)}"
 
 %script{:src => "/assets/contributions.js"}
 %link{:href => "/assets/css/keen-dashboards.css", :rel => "stylesheet"}/

@@ -2,32 +2,37 @@
   .col-sm-3
     .chart-wrapper
       .chart-title
-        Cell Title
+        Commits/User
       .chart-stage
         #split-rows-grid-1-1
-          .start_day= "start day: #{commits_stats[:start_day]}"
-          .end_day= "end day: #{commits_stats[:end_day]}"
           .commits
-            .num= "commits: #{contribution.try(:commits).present? ? contribution.commits.size : 0}"
-          .issues
-            = "issues: #{contribution.try(:issues).present? ? contribution.issues.size : 0}"
+            - contributors.each do |login, commits|
+              .contributor
+                = link_to(login, "https://github.com/#{login}", target: '_blank')
+                = ": #{commits.size}"
+
+            .space-8
+
+            - sum = contributors.inject(0){|sum, (login, commits)| sum + commits.size }
+            .sum= "sum: #{sum}"
+            .avg= "avg: #{sum / contributors.size}"
 
       .chart-notes
-        Notes about this chart
+        Commits count commited by the user in specified period.
   .col-sm-9
     .chart-wrapper
       .chart-title
-        Commits
+        Commits/User/Day
       .chart-stage
         #split-rows-grid-1-2
       .chart-notes
-        Notes about this chart
+        Commits/User/Day
 
 .row
   .col-sm-3
     .chart-wrapper
       .chart-title
-        Cell Title
+        Additions/User
       .chart-stage
         %img{"data-src" => "holder.js/100%x120/white"}/
       .chart-notes
@@ -35,17 +40,17 @@
   .col-sm-9
     .chart-wrapper
       .chart-title
-        Additions
+        Additions/User/Day
       .chart-stage
         #split-rows-grid-2-2
       .chart-notes
-        Notes about this chart
+        Additions/User/Day
 
 .row
   .col-sm-3
     .chart-wrapper
       .chart-title
-        Cell Title
+        Deletions/User
       .chart-stage
         %img{"data-src" => "holder.js/100%x120/white"}/
       .chart-notes
@@ -53,11 +58,11 @@
   .col-sm-9
     .chart-wrapper
       .chart-title
-        Deletions
+        Deletions/User/Day
       .chart-stage
         #split-rows-grid-3-2
       .chart-notes
-        Notes about this chart
+        Deletions/User/Day
 
 .row
   .col-sm-3

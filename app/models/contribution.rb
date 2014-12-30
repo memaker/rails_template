@@ -90,7 +90,7 @@ class Contribution
   #     ...
   #     others:                            [Array<Commit>]
   #   }
-  def arrange_commits_to_focus_on_contributor
+  def contributors
     fetch_commits if commits.nil?
 
     myself, rivals =

@@ -13,6 +13,7 @@ class ContributionsController < ApplicationController
     login = params[:login]         # octocat
     SearchWorker.perform_async(full_name, login)
     @contribution = Contribution.find_or_initialize_by(login: login, full_name: full_name)
+    @date_range = set_date_range
 
     respond_with(@contribution)
   end
@@ -25,14 +26,18 @@ class ContributionsController < ApplicationController
       contribution = Contribution.find_by(login: login, full_name: full_name)
 
       if contribution.recently_fetched?
-        now_utc = DateTime.now.utc
+        date_range = set_date_range
+        contributors = contribution.contributors
 
         commits_stats = calc_commits_stats(
-          contribution.arrange_commits_to_focus_on_contributor,
-          now_utc - 6.days,
-          now_utc
+          contributors,
+          date_range[:start_day],
+          date_range[:end_day]
         )
-        render json: {html: render_to_string(partial: 'search_result', locals: {contribution: contribution, commits_stats: commits_stats})}
+        render json: {html: render_to_string(
+                 partial: 'search_result',
+                 locals: {contribution: contribution, commits_stats: commits_stats, contributors: contributors}
+               )}
       else
         render json: {message: contribution.fetch_status || 'Processing.'}
       end
@@ -108,6 +113,14 @@ class ContributionsController < ApplicationController
       commits: commits_data,
       additions: additions_data,
       deletions: deletions_data,
+    }
+  end
+
+  def set_date_range
+    now_utc = DateTime.now.utc
+    {
+      start_day: now_utc - 6.days,
+      end_day: now_utc
     }
   end
 
