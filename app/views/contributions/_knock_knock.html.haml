@@ -6,7 +6,7 @@
     %i.ace-icon.fa.fa-angle-down.icon-on-right
   %ul.dropdown-menu
     - contributors.each do |login, commits|
-      - next if login.to_s == contribution.login.to_s || contribution.login.to_s == 'others'
+      - next if login.to_s.in?([contribution.login.to_s, 'others'])
       %li
         = link_to login, contributions_path(full_name: contribution.full_name, login: login)
 
